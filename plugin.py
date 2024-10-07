@@ -23,8 +23,9 @@
 """
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QApplication
-
+from qgis.PyQt.QtWidgets import QAction, QApplication, QMenu, QMessageBox
+from MISLAND.settings import DlgSettings
+from MISLAND.calculate import DlgCalculate
 
 # Initialize Qt resources from file resources.py
 from builtins import object
@@ -63,8 +64,13 @@ class MISLANDAFRICA(object):
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&MISLANDAFRICA')
-
+        self.menu = QMenu(QApplication.translate('MISLANDAFRICA', u'&MISLANDAFRICA'))
+        self.menu.setIcon(QIcon(':/plugins/MISLANDAFRICA/misland_logo.png'))
+        self.toolbar = self.iface.addToolBar(u'MISLANDAFRICA')
+        self.raster_menu = self.iface.rasterMenu()
+        self.raster_menu.addMenu(self.menu)
+        self.dlg_settings = DlgSettings()
+        self.dlg_calculate = DlgCalculate()
         # Check if plugin was started the first time in current QGIS session
         # Must be set in initGui() to survive plugin reloads
         self.first_start = None
@@ -147,13 +153,10 @@ class MISLANDAFRICA(object):
             action.setWhatsThis(whats_this)
 
         if add_to_toolbar:
-            # Adds plugin icon to Plugins toolbar
-            self.iface.addToolBarIcon(action)
+            self.toolbar.addAction(action)
 
         if add_to_menu:
-            self.iface.addPluginToMenu(
-                self.menu,
-                action)
+            self.menu.addAction(action)
 
         self.actions.append(action)
 
@@ -165,17 +168,17 @@ class MISLANDAFRICA(object):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         self.add_action(
             ':/plugins/MISLAND/icons/wrench2.svg',
-            text=QApplication.translate('MISLAND', u'User Settings'),
+            text=QApplication.translate('MISLANDAFRICA', u'User Settings'),
             callback=self.run_settings,
             parent=self.iface.mainWindow(),
-            status_tip=QApplication.translate('MISLAND', 'LDMT User Settings'))
+            status_tip=QApplication.translate('MISLANDAFRICA', 'LDMT User Settings'))
 
         self.add_action(
             ':/plugins/MISLAND/icons/calculator1.svg',
-            text=QApplication.translate('MISLAND', u'Calculate indicators'),
+            text=QApplication.translate('MISLANDAFRICA', u'Calculate indicators'),
             callback=self.run_calculate,
             parent=self.iface.mainWindow(),
-            status_tip=QApplication.translate('MISLAND', 'Calculate indicators'))
+            status_tip=QApplication.translate('MISLANDAFRICA', 'Calculate indicators'))
 
         
 
@@ -187,6 +190,10 @@ class MISLANDAFRICA(object):
                 self.tr(u'&MISLANDAFRICA'),
                 action)
             self.iface.removeToolBarIcon(action)
+         # remove the menu
+        self.raster_menu.removeAction(self.menu.menuAction())
+        # remove the toolbar
+        del self.toolbar
 
 
     def run_settings(self):
