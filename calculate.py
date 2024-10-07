@@ -1,4 +1,7 @@
 from .gui.DlgCalculate import Ui_DlgCalculate
+from .gui.DlgSDG import Ui_DlgSDG
+from .gui.DlgForests import Ui_DlgForests
+from .gui.DlgSoilErosion import Ui_DlgSoilErosional
 from qgis.PyQt import QtWidgets
 
 
