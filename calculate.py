@@ -1,7 +1,8 @@
 from .gui.DlgCalculate import Ui_DlgCalculate
 from .gui.DlgSDG import Ui_DlgSDG
 from .gui.DlgForests import Ui_DlgForests
-from .gui.DlgSoilErosion import Ui_DlgSoilErosional
+from .gui.DlgSoilErosion import Ui_DlgSoilErosion
+from .SDG import *
 from qgis.PyQt import QtWidgets
 
 
@@ -11,7 +12,9 @@ class DlgCalculate(QtWidgets.QDialog, Ui_DlgCalculate):
 
         self.setupUi(self)
 
-    #     self.dlg_calculate_ld = DlgCalculateLD()
+        self.dlgSDG = DlgSDG()
+        self.dlgForests = DlgForests()
+        self.dlgSoilErosion = DlgSoilErosion()
     #     self.dlg_calculate_tc = DlgCalculateTC()
     #     self.dlg_calculate_rest_biomass = DlgCalculateRestBiomass()
     #     # self.dlg_calculate_urban = DlgCalculateUrban()
@@ -27,56 +30,60 @@ class DlgCalculate(QtWidgets.QDialog, Ui_DlgCalculate):
     #     from MISLAND.timeseries import DlgTimeseries
     #     self.dlg_timeseries = DlgTimeseries()
         
-    #     self.pushButton_ld.clicked.connect(self.btn_ld_clicked)
-    #     self.pushButton_timeseries.clicked.connect(self.btn_timeseries_clicked)
-    #     # self.pushButton_tc.clicked.connect(self.btn_tc_clicked)
-    #     # self.pushButton_rest_biomass.clicked.connect(self.btn_rest_biomass_clicked)
-    #     # self.pushButton_urban.clicked.connect(self.btn_urban_clicked)
-    #     self.pushButton_forest.clicked.connect(self.btn_forest_clicked)
-    #     self.pushButton_medalus.clicked.connect(self.btn_medalus_clicked)
-    #     self.pushbutton_CE.clicked.connect(self.btn_ce_clicked)
-    #     self.pushButton_SE.clicked.connect(self.btn_se_clicked)
+        self.pushButton_ld.clicked.connect(self.btn_ld_clicked)
+        self.pushButton_forest.clicked.connect(self.btn_forest_clicked)
+        self.pushButton_SE.clicked.connect(self.btn_SE_clicked)
     
-    # def btn_ld_clicked(self):
-    #     self.close()
-    #     result = self.dlg_calculate_ld.exec_()
+    def btn_ld_clicked(self):
+        self.close()
+        result = self.dlgSDG.exec_()
 
-    # def btn_tc_clicked(self):
-    #     self.close()
-    #     result = self.dlg_calculate_tc.exec_()
-
-    # def btn_rest_biomass_clicked(self):
-    #     self.close()
-    #     result = self.dlg_calculate_rest_biomass.exec_()
-
-    # def btn_forest_clicked(self):
-    #     self.close()
-    #     result = self.dlg_calculate_forest.exec_()
-    #     # self.close()
-    #     # result = self.dlg_calculate_forest.exec_()
-    #     # QtWidgets.QMessageBox.information(None, self.tr("Coming soon!"),
-    #     #                         self.tr("Forest coming soon!"))
-
-    # def btn_medalus_clicked(self):
-    #     self.close()
-    #     result = self.dlg_calculate_medalus.exec_()
-    #     # QtWidgets.QMessageBox.information(None, self.tr("Coming soon!"),
-    #     #                         self.tr("MEDALUS coming soon!"))
-
-    # def btn_timeseries_clicked(self):
-    #     self.close()
-    #     result = self.dlg_timeseries.exec_()
-    #     # QtWidgets.QMessageBox.information(None, self.tr("Coming soon!"),
-    #     #                         self.tr("MEDALUS coming soon!"))
+    def btn_forest_clicked(self):
+        self.close()
+        result=self.dlgForests.exec_()
     
-    # #This listens for when the coastal erosion button is clicked
-    # def btn_ce_clicked(self):
-    #     self.close()
-    #     result=self.dlg_calculate_ce.exec_()
+    def btn_SE_clicked(self):
+        self.close()
+        result = self.dlgSoilErosion.exec_()
+        
+    
+    
+class DlgSDG(QtWidgets.QDialog, Ui_DlgSDG):
+    def __init__(self, parent=None):
+        super(DlgSDG, self).__init__(parent)
 
-    # def btn_se_clicked(self):
-    #     self.close()
-    #     result = self.dlg_calculate_se.exec_() 
-    # # def btn_urban_clicked(self):
-    # #     self.close()
-    # #     result = self.dlg_calculate_urban.exec_()
+        self.setupUi(self)
+        
+        self.pushButton_lp.clicked.connect(self.btn_lp_clicked)
+        self.pushButton_lc.clicked.connect(self.btn_lc_clicked)
+        self.pushButton_cs.clicked.connect(self.btn_cs_clicked)
+        self.pushButton_sdg.clicked.connect(self.btn_sdg_clicked)
+        
+    def btn_lp_clicked(self):
+        self.close()
+        result = DlgLandProductivity().exec_()
+        
+    def btn_lc_clicked(self):
+        self.close()
+        result = DlgLandCover().exec_()
+    
+    def btn_sdg_clicked(self):
+        self.close()
+        result = DlgSDGIndicator().exec_()
+        
+    def btn_cs_clicked(self):
+        self.close()
+        result=DlgCarbonStock().exec_()
+        
+        
+class DlgForests(QtWidgets.QDialog, Ui_DlgForests):
+    def __init__(self, parent=None):
+        super(DlgForests, self).__init__(parent)
+
+        self.setupUi(self)
+        
+class DlgSoilErosion(QtWidgets.QDialog, Ui_DlgSoilErosion):
+    def __init__(self, parent=None):
+        super(DlgSoilErosion, self).__init__(parent)
+
+        self.setupUi(self)
