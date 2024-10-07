@@ -24,15 +24,14 @@
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMenu, QMessageBox
-from MISLAND.settings import DlgSettings
-from MISLAND.calculate import DlgCalculate
+from .settings import DlgSettings
+from .calculate import DlgCalculate
 
 # Initialize Qt resources from file resources.py
 from builtins import object
 from .resources import *
 # Import the code for the dialog
-from .MISLANDAFRICA_dialog import MISLANDAFRICADialog
-import os.path
+import os
 
 
 class MISLANDAFRICA(object):
@@ -167,14 +166,14 @@ class MISLANDAFRICA(object):
         
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         self.add_action(
-            ':/plugins/MISLAND/icons/wrench2.svg',
+            ':/plugins/MISLANDAFRICA/icons/wrench2.svg',
             text=QApplication.translate('MISLANDAFRICA', u'User Settings'),
             callback=self.run_settings,
             parent=self.iface.mainWindow(),
             status_tip=QApplication.translate('MISLANDAFRICA', 'LDMT User Settings'))
 
         self.add_action(
-            ':/plugins/MISLAND/icons/calculator1.svg',
+            ':/plugins/MISLANDAFRICA/icons/calculator1.svg',
             text=QApplication.translate('MISLANDAFRICA', u'Calculate indicators'),
             callback=self.run_calculate,
             parent=self.iface.mainWindow(),

@@ -26,12 +26,13 @@
 from qgis.PyQt import QtCore
 
 from qgis.core import QgsMessageLog
+from qgis.utils import iface
 
-debug = QtCore.QSettings().value('MISLAND/debug', True)
+debug = QtCore.QSettings().value('MISLANDAFRICA/debug', True)
 # log the details
 def log(message, level=0):
     if debug:
-        QgsMessageLog.logMessage(message, tag="MISLAND", level=level)
+        QgsMessageLog.logMessage(message, tag="MISLANDAFRICA", level=level)
         
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name
@@ -41,5 +42,5 @@ def classFactory(iface):  # pylint: disable=invalid-name
     :type iface: QgsInterface
     """
     #
-    from .plugin import MISLANDAFRICA
+    from MISLANDAFRICA.plugin import MISLANDAFRICA
     return MISLANDAFRICA(iface)

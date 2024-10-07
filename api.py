@@ -14,105 +14,100 @@ from qgis.PyQt import QtWidgets, QtCore
 
 from qgis.utils import iface
 
-from MISLANDAFRICA.worker import AbstractWorker, start_worker
+from .worker import AbstractWorker, start_worker
 
 from MISLANDAFRICA import log
 
-API_URL = 'http://misland-africa.oss-online.org/misland_api'
+API_URL = 'http://misland-africa.oss-online.org:1337/api'
 TIMEOUT = 20
 
 def get_user_email(warn=True):
-    email = QtCore.QSettings().value("MISLAND/email", None)
+    email = QtCore.QSettings().value("MISLANDAFRICA/email", None)
     if warn and email is None:
         QtWidgets.QMessageBox.critical(None,
-                                   QtWidgets.QApplication.translate("MISLAND", "Error"),
-                                   QtWidgets.QApplication.translate("MISLAND", "Please register with MISLAND before using this function."))
+                                   QtWidgets.QApplication.translate("MISLANDAFRICA", "Error"),
+                                   QtWidgets.QApplication.translate("MISLANDAFRICA", "Please register with MISLANDAFRICA before using this function."))
         return None
     else:
         return email
 
+def get_access_token(warn=True):
+    token = QtCore.QSettings().value("MISLANDAFRICA/token", None)
+    if token is None:
+        return None
+    return token
 ###############################################################################
 # Threading functions for calls to requests
 
-
-class RequestWorker(AbstractWorker):
-    """worker, implement the work method here and raise exceptions if needed"""
-
-    def __init__(self, url, method, payload, headers):
-        AbstractWorker.__init__(self)
-        self.url = url
-        self.method = method
-        self.payload = payload
-        self.headers = headers
-
-    def work(self):
-        self.toggle_show_progress.emit(False)
-        self.toggle_show_cancel.emit(False)
-        if self.method == 'get':
-            resp = requests.get(self.url, json=self.payload, headers=self.headers, timeout=TIMEOUT)
-        elif self.method == 'post':
-            resp = requests.post(self.url, json=self.payload, headers=self.headers, timeout=TIMEOUT)
-        elif self.method == 'update':
-            resp = requests.update(self.url, json=self.payload, headers=self.headers, timeout=TIMEOUT)
-        elif self.method == 'delete':
-            resp = requests.delete(self.url, json=self.payload, headers=self.headers, timeout=TIMEOUT)
-        elif self.method == 'patch':
-            resp = requests.patch(self.url, json=self.payload, headers=self.headers, timeout=TIMEOUT)
-        elif self.method == 'head':
-            resp = requests.head(self.url, json=self.payload, headers=self.headers, timeout=TIMEOUT)
-        else:
-            raise ValueError("Unrecognized method: {}".format(self.method))
-            resp = None
+def login(email=None, password=None):
+    if (email == None):
+        email = get_user_email()
+    if (password == None):
+        password = QtCore.QSettings().value("MISLANDAFRICA/password", None)
+    if not email or not password:
+        log('API unable to login - check username/password')
+        QtWidgets.QMessageBox.critical(None,
+                                   QtWidgets.QApplication.translate("MISLANDAFRICA", "Error"),
+                                   QtWidgets.QApplication.translate("MISLANDAFRICA", "Unable to login to MISLAND-AFRICA. Check your username and password."))
+        return None
+    print(password)
+    print(email)
+    # resp = call_api('/auth', method='post', payload={"email": email, "password": password})
+    resp = requests.post(API_URL+ "/login/", json={"email": email, "password": password})
+    
+    if resp.status_code == 200:
+        print("Access Token:\t{}".format(resp.json().get("token")))
+        QtCore.QSettings().setValue("MISLANDAFRICA/email", email)
+        QtCore.QSettings().setValue("MISLANDAFRICA/password", password)
+        QtCore.QSettings().setValue("MISLANDAFRICA/token", resp.json().get("token"))
         return resp
+        
+    elif str(resp.status_code).startswith("5"):
+        log("Could not connect to the MISLANDAFRICA server due to a server error. Error code: {}".format(resp.status_code))
+        QtWidgets.QMessageBox.critical(None,
+                                   QtWidgets.QApplication.translate("MISLANDAFRICA", "Error"),
+                                   QtWidgets.QApplication.translate("MISLANDAFRICA", "Could not connect to the MISLAND-AFRICA server due to a server error. Error code: {}".format(resp.status_code)))
+        return None
+    elif resp.json().get('non_field_errors') is not None:
+        log(resp.json().get('non_field_errors')[0])
+        QtWidgets.QMessageBox.critical(None,
+                                   QtWidgets.QApplication.translate("MISLANDAFRICA", "Error"),
+                                   QtWidgets.QApplication.translate("MISLANDAFRICA", resp.json().get('non_field_errors')[0]))
+        return None
+    else:
+        log("Could not login. Error code: {}".format(resp.status_code))
+        QtWidgets.QMessageBox.critical(None,
+                                   QtWidgets.QApplication.translate("MISLANDAFRICA", "Error"),
+                                   QtWidgets.QApplication.translate("MISLANDAFRICA", "Could not login. Error code: {}".format(resp.status_code)))
+        return None
+        
 
 
-class Request(object):
-    def __init__(self, url, method='get', payload=None, headers={}, server_name='Land Degradation Monitoring Service'):
-        self.resp = None
-        self.exception = None
+def fetchRaster(endpoint, payload):
+    token = get_access_token()
+    resp = requests.post(API_URL+ endpoint, json=payload, headers={'Authorization': 'Bearer {}'.format(token)})
+    
+    if resp.status_code == 200:
+        return resp
+        
+    elif str(resp.status_code).startswith("5"):
+        log("Could not connect to the MISLANDAFRICA server due to a server error. Error code: {}".format(resp.status_code))
+        QtWidgets.QMessageBox.critical(None,
+                                   QtWidgets.QApplication.translate("MISLANDAFRICA", "Error"),
+                                   QtWidgets.QApplication.translate("MISLANDAFRICA", "Could not connect to the MISLAND-AFRICA server due to a server error. Error code: {}".format(resp.status_code)))
+        return None
+    elif resp.json().get('non_field_errors') is not None:
+        log(resp.json().get('non_field_errors')[0])
+        QtWidgets.QMessageBox.critical(None,
+                                   QtWidgets.QApplication.translate("MISLANDAFRICA", "Error"),
+                                   QtWidgets.QApplication.translate("MISLANDAFRICA", resp.json().get('non_field_errors')[0]))
+        return None
+    else:
+        log("Could not login. Error code: {}".format(resp.status_code))
+        QtWidgets.QMessageBox.critical(None,
+                                   QtWidgets.QApplication.translate("MISLANDAFRICA", "Error"),
+                                   QtWidgets.QApplication.translate("MISLANDAFRICA", "Could not login. Error code: {}".format(resp.status_code)))
+        return None
+      
 
-        self.url = url
-        self.method = method
-        self.payload = payload
-        self.headers = headers
-        self.server_name = server_name
-
-    def start(self):
-        try:
-            worker = RequestWorker(self.url, self.method, self.payload, self.headers)
-            pause = QtCore.QEventLoop()
-            worker.finished.connect(pause.quit)
-            worker.successfully_finished.connect(self.save_resp)
-            worker.error.connect(self.save_exception)
-            start_worker(worker, iface, QtWidgets.QApplication.translate("MISLAND", u'Contacting {} server...'.format(self.server_name)))
-            pause.exec_()
-            if self.get_exception():
-                raise self.get_exception()
-        except requests.exceptions.ConnectionError:
-            log('API unable to access server - check internet connection')
-            QtWidgets.QMessageBox.critical(None,
-                                       QtWidgets.QApplication.translate("MISLAND", "Error"),
-                                       QtWidgets.QApplication.translate("MISLAND", u"Unable to login to {} server. Check your internet connection.".format(self.server_name)))
-            resp = None
-        except requests.exceptions.Timeout:
-            log('API unable to login - general error')
-            QtWidgets.QMessageBox.critical(None,
-                                       QtWidgets.QApplication.translate("MISLAND", "Error"),
-                                       QtWidgets.QApplication.translate("MISLAND", u"Unable to connect to {} server.".format(self.server_name)))
-            resp = None
-
-    def save_resp(self, resp):
-        self.resp = resp
-
-    def get_resp(self):
-        return self.resp
-
-    def save_exception(self, exception):
-        self.exception = exception
-
-    def get_exception(self):
-        return self.exception
-
-###############################################################################
-# Other helper functions for api calls
-
+    

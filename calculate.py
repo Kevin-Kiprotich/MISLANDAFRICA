@@ -1,4 +1,4 @@
-from MISLANDAFRICA.gui.DlgCalculate import Ui_DlgCalculate
+from .gui.DlgCalculate import Ui_DlgCalculate
 from qgis.PyQt import QtWidgets
 
 
