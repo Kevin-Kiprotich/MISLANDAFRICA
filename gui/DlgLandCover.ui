@@ -48,7 +48,7 @@
           <item>
            <widget class="QComboBox" name="CountryComboBox">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -99,7 +99,7 @@
           <item>
            <widget class="QComboBox" name="RegionComboBox">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -150,7 +150,7 @@
           <item>
            <widget class="QComboBox" name="SubRegionComboBox">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -203,7 +203,7 @@
         <item>
          <widget class="QComboBox" name="OptionComboBox">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -248,7 +248,7 @@
         <item>
          <widget class="QComboBox" name="SourceComboBox">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -287,7 +287,7 @@
         <item>
          <widget class="QComboBox" name="YearComboBox">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -328,7 +328,7 @@
           <item>
            <widget class="QLineEdit" name="OutputLineEdit">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -344,7 +344,7 @@
           <item>
            <widget class="QPushButton" name="OutputPushButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+             <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -381,12 +381,12 @@
            </font>
           </property>
           <property name="text">
-           <string>Cashed</string>
+           <string>Cache</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="LandcoverCashedCheckBox">
+         <widget class="QCheckBox" name="CacheCheckBox">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
@@ -400,7 +400,7 @@
         <item>
          <widget class="QPushButton" name="SubmitPushButton">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+           <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>

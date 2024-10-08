@@ -1,75 +1,229 @@
-from qgis.PyQt.QtWidgets import QMessageBox
-
-from MISLANDAFRICA import log
+from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QFileDialog
+from qgis.core import QgsRasterLayer, QgsProject
+from qgis.utils import iface
+from .data.admin_bounds import countries, regions, subregions
+from . import log
+from .api import get_access_token
 import requests
-URL_PATH = "http://41.227.30.136:1337"
 
-"""
-    This function retrieves level 0 admin boundaries to be used in the country comboboxes.
-"""
+API_URL = 'http://misland-africa.oss-online.org:1337/api'
+
 
 def get_Adm0():
-    path = "/api/vect0/?include=all"
-    #create a response object
-    try:
-        response = requests.get(URL_PATH + path)
-        return response.json()
-    except requests.exceptions.ConnectionError:
-        log("Unable to access the MISLAND server")
-        return []
-    except requests.exceptions.Timeout:
-        log('API unable to login - general error')
-        return []
+    """
+        This function retrieves level 0 admin boundaries to be used in the country comboboxes.
+        Returns:
+            list: A list of the all countries
+    """
+    return countries
     
-
-
-"""
-    This function retrieves level 1 admin boundaries to be added region comboboxes.
-"""
-def get_Adm1(adm0_id):
-    path= "/api/vect1/?include=all"
-    try:
-        response = requests.get(URL_PATH +path)
-        all_adm1=response.json()
-        adm1=[]
-        for item in all_adm1:
-            if item['admin_zero_id']==adm0_id:
-                adm1.append(item)
-        return adm1
-    except requests.exceptions.ConnectionError:
-        log("Unable to access the MISLAND server")
-        return []
-    except requests.exceptions.Timeout:
-        log('API unable to login - general error')
-        return []
-
-
-"""
-    This function retrieves level 2 admin boundaries to be added in the sub-region combo boxes
-"""
-def get_Adm2(adm1_id):
-    path="/api/vect2/"
-    try:
-        response = requests.get(URL_PATH+path)
-        all_adm2=response.json()
-        adm2=[]
-        for item in all_adm2:
-            if item["admin_one_id"]==adm1_id:
-                adm2.append(item)
-        
-        return adm2
-
-    except requests.exceptions.ConnectionError:
-        log("Unable to access the MISLAND server")
-        return []
+def get_Adm1(adm0_id: int):
+    """
+        This function retrieves level 1 admin boundaries to be added region comboboxes.
+        Args:
+            adm0_id (int): The id of the country
+        Returns:
+            list: A list of the regions in the country
+    """
+    all_adm1=regions
+    adm1=[]
+    for item in all_adm1:
+        if item['admin_zero_id']==adm0_id:
+            adm1.append(item)
+    return adm1
     
-    except requests.exceptions.Timeout:
-        log('API unable to login - general error')
-        return []
+def get_Adm2(adm1_id: int):
+    """
+        This function retrieves level 2 admin boundaries to be added in the sub-region combo boxes.
+        Args:
+            adm1_id (int): The id of the region
+        Returns:
+            list: A list of the subregions in the region
+    """
+    all_adm2=subregions
+    adm2=[]
+    for item in all_adm2:
+        if item["admin_one_id"]==adm1_id:
+            adm2.append(item)
+    
+    return adm2
 
 def show_error_message(message):
+        """
+            Shows an error message if an error occurs.
+            Args:
+                message (str): Error message to be displayed.
+        """
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Critical)
         msg_box.setWindowTitle("Error")
         msg_box.setText(message)
         msg_box.exec_()
+        
+def populate_region(country: str):
+    """
+        Populates region names only.
+        Args:
+            country (str): The name of the country for regions are to be returned.
+        Returns:
+            list: A sorted list of all regions and the country id
+    """ 
+    regions = []
+    id = 0
+    for item in get_Adm0():
+        if country == item['name_0']:
+            id = item['id']
+            for region in get_Adm1(id):
+                regions.append(region['name_1'])
+            break
+    return sorted(regions), id
+
+def populate_sub_region(region:str, countryID:int):
+    """
+        Populates region names only.
+        Args:
+            region (str): The name of the country for sub-regions are to be returned.
+            countryID (int): The id of the country for which the region belongs.
+        Returns:
+            list: A sorted list of all sub-regions and the region id.
+    """
+    sub_regions=[]
+    regionID = 0
+    for item in get_Adm1(countryID):
+        if region == item['name_1']:
+            regionID = item['id']
+            for subregion in get_Adm2(regionID):
+                sub_regions.append(subregion['name_2'])
+            break
+    return sorted(sub_regions), regionID
+
+def fetchComputationYears(computation_type: str):
+    """
+        Populates region names only.
+        Args:
+            computation_type (str): Computation type.
+        Returns:
+            list: A sorted list of computation years associated with the given computation type.
+    """
+    path="/computationyears/"
+    try:
+        response = requests.get(API_URL+path)
+        if response.status_code == 200:
+            computations=response.json()
+            for item in computations:
+                if computation_type == item['computation_type']:
+                    years = item["published_years"]
+                    return sorted(list(map(str, years)))
+        else:
+            print(response.text)
+            show_error_message("Error fetching computation years")
+            return None
+    except requests.exceptions.ConnectionError:
+        log("Unable to access the MISLAND server")
+        QMessageBox.critical(None,
+                                    QApplication.translate("MISLAND", "Error"),
+                                    QApplication.translate("MISLAND", u"Unable to login to MISLAND-AFRICA server. Check your internet connection."))
+        return None
+    except requests.exceptions.Timeout:
+        log('API unable to login - general error')
+        QMessageBox.critical(None,
+                                    QApplication.translate("MISLAND", "Error"),
+                                    QApplication.translate("MISLAND", u"Unable to connect to the MISLAND-AFRICA server."))
+        return None
+    
+def getOutputDestination(parent=None):
+        """
+        Open a file dialog to allow the user to select where to save the output GeoTIFF file.
+
+        Returns:
+            str: The file path selected by the user to save the GeoTIFF file, or an empty string if canceled.
+        """
+        options = QFileDialog.Options()
+        file_name, _ = QFileDialog.getSaveFileName(parent, "Select Output Destination", "", "GeoTIFF Files (*.tif);;All Files (*)", options=options)
+        
+        if file_name:
+            return file_name
+        else:
+            return ""
+        
+def fetchRaster(path, payload, filePath, progressDialog, progressBar):
+    token = get_access_token()
+    try:
+        progressDialog.setLabelText("Fetching Data ...")
+        progressBar.setValue(0)
+        resp = requests.post(API_URL+path, json = payload, headers = {"Authorization": "Bearer " + token})
+        
+        if resp.status_code == 200:
+            progressBar.setValue(30)
+            raster_data = resp.json()
+            print(raster_data)
+            progressDialog.setLabelText("Fetching Raster File ...")
+            if "error" in raster_data.keys():
+                show_error_message(raster_data['error'])
+                progressDialog.close()
+                return None
+            raster_response = requests.get(raster_data["rasterfile"])
+            progressBar.setValue(50)
+            if raster_response.status_code == 200:
+                progressDialog.setLabelText("Writing Raster File ...")
+                progressBar.setValue(60)
+                with open(filePath , "wb") as file:
+                    file.write(raster_response.content)
+                
+                sldURL="http://misland-africa.oss-online.org:8600/geoserver/ldms/wms?service=WMS&version=1.1.1&request=GetStyles&layers={}".format(raster_data["tiles"]["layer"])
+                # Step 1: Load the GeoTIFF into QGIS
+                progressDialog.setLabelText("Loading raster to QGIS...")
+                progressBar.setValue(70)
+                project = QgsProject.instance()
+                filename = filePath.split("/")[-1][0:-4]
+                raster_layer = QgsRasterLayer(filePath, filename, 'gdal')
+                if not raster_layer.isValid():
+                    progressDialog.close()
+                    show_error_message("Invalid GeoTiff")
+                    return None
+                else:
+                    progressBar.setValue(80)
+                    QgsProject.instance().addMapLayer(raster_layer)
+                    log("GeoTIFF loaded successfully!")
+                    project.instance().addMapLayer(raster_layer)
+                    # Step 2: Apply the SLD style from the URL (or from a local file)
+                    progressDialog.setLabelText("Loading Style Layer...")
+                    progressBar.setValue(90)
+                    if raster_layer.loadSldStyle(sldURL):
+                        project.instance().addMapLayer(raster_layer)
+                        progressDialog.setLabelText("Done...")
+                        progressBar.setValue(100)
+                        progressDialog.close()
+                        log("SLD applied successfully!")
+                        
+                    else:
+                        log("Failed to apply the SLD style.")
+                        progressDialog.close()
+                        show_error_message("Failed to apply the SLD style")
+                        return None
+                    return True
+            else:
+                show_error_message("Error fetching raster. Error code: {}".format(raster_response.status_code))
+                return None
+        elif str(resp.status_code).startswith("5"):
+            log("Could not connect to the MISLANDAFRICA server due to a server error. Error code: {}".format(resp.status_code))
+            QMessageBox.critical(None,
+                                    QApplication.translate("MISLANDAFRICA", "Error"),
+                                    QApplication.translate("MISLANDAFRICA", "Could not connect to the MISLAND-AFRICA server due to a server error. Error code: {}".format(resp.status_code)))
+            return None
+        
+    except requests.exceptions.ConnectionError:
+        log('API unable to access server - check internet connection')
+        QMessageBox.critical(None,
+                                QApplication.translate("MISLAND", "Error"),
+                                QApplication.translate("MISLAND", u"Unable to login to MISLAND-AFRICA server. Check your internet connection."))
+        resp = None
+    except requests.exceptions.Timeout:
+        log('API unable to login - general error')
+        QMessageBox.critical(None,
+                                QApplication.translate("MISLAND", "Error"),
+                                QApplication.translate("MISLAND", u"Unable to connect to the MISLAND-AFRICA server."))
+        resp = None
+    # except Exception as e:
+    #     show_error_message(str(e))
+    #     return None
