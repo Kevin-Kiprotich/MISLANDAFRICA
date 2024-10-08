@@ -12,12 +12,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_DlgLandProductivity(object):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(425, 480)
-        self.verticalLayout_9 = QtWidgets.QVBoxLayout(Dialog)
+    def setupUi(self, DlgLandProductivity):
+        DlgLandProductivity.setObjectName("DlgLandProductivity")
+        DlgLandProductivity.resize(425, 447)
+        self.verticalLayout_9 = QtWidgets.QVBoxLayout(DlgLandProductivity)
         self.verticalLayout_9.setObjectName("verticalLayout_9")
-        self.groupBox = QtWidgets.QGroupBox(Dialog)
+        self.groupBox = QtWidgets.QGroupBox(DlgLandProductivity)
         self.groupBox.setObjectName("groupBox")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.groupBox)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
@@ -124,7 +124,7 @@ class Ui_DlgLandProductivity(object):
         font.setFamily("MS Reference Sans Serif")
         font.setPointSize(9)
         self.IndicatorComboBox.setFont(font)
-        self.IndicatorComboBox.setEditable(True)
+        self.IndicatorComboBox.setEditable(False)
         self.IndicatorComboBox.setCurrentText("")
         self.IndicatorComboBox.setObjectName("IndicatorComboBox")
         self.verticalLayout.addWidget(self.IndicatorComboBox)
@@ -149,7 +149,7 @@ class Ui_DlgLandProductivity(object):
         font.setFamily("MS Reference Sans Serif")
         font.setPointSize(9)
         self.SourceComboBox.setFont(font)
-        self.SourceComboBox.setEditable(True)
+        self.SourceComboBox.setEditable(False)
         self.SourceComboBox.setCurrentText("")
         self.SourceComboBox.setObjectName("SourceComboBox")
         self.verticalLayout_2.addWidget(self.SourceComboBox)
@@ -170,7 +170,7 @@ class Ui_DlgLandProductivity(object):
         sizePolicy.setHeightForWidth(self.YearComboBox.sizePolicy().hasHeightForWidth())
         self.YearComboBox.setSizePolicy(sizePolicy)
         self.YearComboBox.setMaximumSize(QtCore.QSize(16777215, 40))
-        self.YearComboBox.setEditable(True)
+        self.YearComboBox.setEditable(False)
         self.YearComboBox.setObjectName("YearComboBox")
         self.verticalLayout_3.addWidget(self.YearComboBox)
         self.verticalLayout_5.addLayout(self.verticalLayout_3)
@@ -238,30 +238,30 @@ class Ui_DlgLandProductivity(object):
         self.verticalLayout_5.addLayout(self.horizontalLayout)
         self.verticalLayout_9.addWidget(self.groupBox)
 
-        self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        self.retranslateUi(DlgLandProductivity)
+        QtCore.QMetaObject.connectSlotsByName(DlgLandProductivity)
 
-    def retranslateUi(self, Dialog):
+    def retranslateUi(self, DlgLandProductivity):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.groupBox.setTitle(_translate("Dialog", "Land Productivity"))
-        self.label_6.setText(_translate("Dialog", "Country"))
-        self.label_7.setText(_translate("Dialog", "Region"))
-        self.label_8.setText(_translate("Dialog", "Sub-Region"))
-        self.label.setText(_translate("Dialog", "Productivity Indicator"))
-        self.label_2.setText(_translate("Dialog", "Select Data Source"))
-        self.label_3.setText(_translate("Dialog", "Reporting Period"))
-        self.label_4.setText(_translate("Dialog", "Output File Directory"))
-        self.OutputPushButton.setText(_translate("Dialog", "..."))
-        self.label_5.setText(_translate("Dialog", "Cache"))
-        self.SubmitPushButton.setText(_translate("Dialog", "Submit"))
+        DlgLandProductivity.setWindowTitle(_translate("DlgLandProductivity", "Dialog"))
+        self.groupBox.setTitle(_translate("DlgLandProductivity", "Land Productivity"))
+        self.label_6.setText(_translate("DlgLandProductivity", "Country"))
+        self.label_7.setText(_translate("DlgLandProductivity", "Region"))
+        self.label_8.setText(_translate("DlgLandProductivity", "Sub-Region"))
+        self.label.setText(_translate("DlgLandProductivity", "Productivity Indicator"))
+        self.label_2.setText(_translate("DlgLandProductivity", "Select Data Source"))
+        self.label_3.setText(_translate("DlgLandProductivity", "Reporting Period"))
+        self.label_4.setText(_translate("DlgLandProductivity", "Output File Directory"))
+        self.OutputPushButton.setText(_translate("DlgLandProductivity", "..."))
+        self.label_5.setText(_translate("DlgLandProductivity", "Cache"))
+        self.SubmitPushButton.setText(_translate("DlgLandProductivity", "Submit"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    Dialog = QtWidgets.QDialog()
+    DlgLandProductivity = QtWidgets.QDialog()
     ui = Ui_DlgLandProductivity()
-    ui.setupUi(Dialog)
-    Dialog.show()
+    ui.setupUi(DlgLandProductivity)
+    DlgLandProductivity.show()
     sys.exit(app.exec_())

@@ -12,12 +12,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_DlgLandCover(object):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(427, 480)
-        self.verticalLayout_9 = QtWidgets.QVBoxLayout(Dialog)
+    def setupUi(self, DlgLandCover):
+        DlgLandCover.setObjectName("DlgLandCover")
+        DlgLandCover.resize(431, 446)
+        self.verticalLayout_9 = QtWidgets.QVBoxLayout(DlgLandCover)
         self.verticalLayout_9.setObjectName("verticalLayout_9")
-        self.groupBox = QtWidgets.QGroupBox(Dialog)
+        self.groupBox = QtWidgets.QGroupBox(DlgLandCover)
         self.groupBox.setObjectName("groupBox")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.groupBox)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
@@ -240,30 +240,30 @@ class Ui_DlgLandCover(object):
         self.verticalLayout_5.addLayout(self.horizontalLayout)
         self.verticalLayout_9.addWidget(self.groupBox)
 
-        self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        self.retranslateUi(DlgLandCover)
+        QtCore.QMetaObject.connectSlotsByName(DlgLandCover)
 
-    def retranslateUi(self, Dialog):
+    def retranslateUi(self, DlgLandCover):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.groupBox.setTitle(_translate("Dialog", "Land Cover"))
-        self.label_6.setText(_translate("Dialog", "Country"))
-        self.label_7.setText(_translate("Dialog", "Region"))
-        self.label_8.setText(_translate("Dialog", "Sub-Region"))
-        self.label.setText(_translate("Dialog", "Land Cover Analysis Options"))
-        self.label_2.setText(_translate("Dialog", "Select Data Source"))
-        self.label_3.setText(_translate("Dialog", "Reporting Period"))
-        self.label_4.setText(_translate("Dialog", "Output File Directory"))
-        self.OutputPushButton.setText(_translate("Dialog", "..."))
-        self.label_5.setText(_translate("Dialog", "Cashed"))
-        self.SubmitPushButton.setText(_translate("Dialog", "Submit"))
+        DlgLandCover.setWindowTitle(_translate("DlgLandCover", "Dialog"))
+        self.groupBox.setTitle(_translate("DlgLandCover", "Land Cover"))
+        self.label_6.setText(_translate("DlgLandCover", "Country"))
+        self.label_7.setText(_translate("DlgLandCover", "Region"))
+        self.label_8.setText(_translate("DlgLandCover", "Sub-Region"))
+        self.label.setText(_translate("DlgLandCover", "Land Cover Analysis Options"))
+        self.label_2.setText(_translate("DlgLandCover", "Select Data Source"))
+        self.label_3.setText(_translate("DlgLandCover", "Reporting Period"))
+        self.label_4.setText(_translate("DlgLandCover", "Output File Directory"))
+        self.OutputPushButton.setText(_translate("DlgLandCover", "..."))
+        self.label_5.setText(_translate("DlgLandCover", "Cashed"))
+        self.SubmitPushButton.setText(_translate("DlgLandCover", "Submit"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    Dialog = QtWidgets.QDialog()
+    DlgLandCover = QtWidgets.QDialog()
     ui = Ui_DlgLandCover()
-    ui.setupUi(Dialog)
-    Dialog.show()
+    ui.setupUi(DlgLandCover)
+    DlgLandCover.show()
     sys.exit(app.exec_())

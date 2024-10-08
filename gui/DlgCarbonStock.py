@@ -12,12 +12,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_DlgCarbonStock(object):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(431, 480)
-        self.verticalLayout_9 = QtWidgets.QVBoxLayout(Dialog)
+    def setupUi(self, DlgCarbonStock):
+        DlgCarbonStock.setObjectName("DlgCarbonStock")
+        DlgCarbonStock.resize(431, 447)
+        self.verticalLayout_9 = QtWidgets.QVBoxLayout(DlgCarbonStock)
         self.verticalLayout_9.setObjectName("verticalLayout_9")
-        self.groupBox = QtWidgets.QGroupBox(Dialog)
+        self.groupBox = QtWidgets.QGroupBox(DlgCarbonStock)
         self.groupBox.setObjectName("groupBox")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.groupBox)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
@@ -242,30 +242,30 @@ class Ui_DlgCarbonStock(object):
         self.verticalLayout_5.addLayout(self.horizontalLayout)
         self.verticalLayout_9.addWidget(self.groupBox)
 
-        self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        self.retranslateUi(DlgCarbonStock)
+        QtCore.QMetaObject.connectSlotsByName(DlgCarbonStock)
 
-    def retranslateUi(self, Dialog):
+    def retranslateUi(self, DlgCarbonStock):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.groupBox.setTitle(_translate("Dialog", "Carbon Stock"))
-        self.label_6.setText(_translate("Dialog", "Country"))
-        self.label_7.setText(_translate("Dialog", "Region"))
-        self.label_8.setText(_translate("Dialog", "Sub-Region"))
-        self.label.setText(_translate("Dialog", "Select Data Source"))
-        self.label_2.setText(_translate("Dialog", "SOC Reference"))
-        self.label_3.setText(_translate("Dialog", "Reporting Year"))
-        self.label_4.setText(_translate("Dialog", "Output File Directory"))
-        self.OutputPushButton.setText(_translate("Dialog", "..."))
-        self.label_5.setText(_translate("Dialog", "Cache"))
-        self.SubmitPushButton.setText(_translate("Dialog", "Submit"))
+        DlgCarbonStock.setWindowTitle(_translate("DlgCarbonStock", "Dialog"))
+        self.groupBox.setTitle(_translate("DlgCarbonStock", "Carbon Stock"))
+        self.label_6.setText(_translate("DlgCarbonStock", "Country"))
+        self.label_7.setText(_translate("DlgCarbonStock", "Region"))
+        self.label_8.setText(_translate("DlgCarbonStock", "Sub-Region"))
+        self.label.setText(_translate("DlgCarbonStock", "Select Data Source"))
+        self.label_2.setText(_translate("DlgCarbonStock", "SOC Reference"))
+        self.label_3.setText(_translate("DlgCarbonStock", "Reporting Year"))
+        self.label_4.setText(_translate("DlgCarbonStock", "Output File Directory"))
+        self.OutputPushButton.setText(_translate("DlgCarbonStock", "..."))
+        self.label_5.setText(_translate("DlgCarbonStock", "Cache"))
+        self.SubmitPushButton.setText(_translate("DlgCarbonStock", "Submit"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    Dialog = QtWidgets.QDialog()
+    DlgCarbonStock = QtWidgets.QDialog()
     ui = Ui_DlgCarbonStock()
-    ui.setupUi(Dialog)
-    Dialog.show()
+    ui.setupUi(DlgCarbonStock)
+    DlgCarbonStock.show()
     sys.exit(app.exec_())
