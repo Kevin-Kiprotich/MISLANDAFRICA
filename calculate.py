@@ -3,6 +3,8 @@ from .gui.DlgSDG import Ui_DlgSDG
 from .gui.DlgForests import Ui_DlgForests
 from .gui.DlgSoilErosion import Ui_DlgSoilErosion
 from .SDG import *
+from .vegetation import DlgVegetation
+from .medalus import DlgMedalus
 from qgis.PyQt import QtWidgets
 
 
@@ -15,6 +17,8 @@ class DlgCalculate(QtWidgets.QDialog, Ui_DlgCalculate):
         self.dlgSDG = DlgSDG()
         self.dlgForests = DlgForests()
         self.dlgSoilErosion = DlgSoilErosion()
+        self.dlgVegetation = DlgVegetation()
+        self.dlgMedalus = DlgMedalus()
     #     self.dlg_calculate_tc = DlgCalculateTC()
     #     self.dlg_calculate_rest_biomass = DlgCalculateRestBiomass()
     #     # self.dlg_calculate_urban = DlgCalculateUrban()
@@ -33,6 +37,8 @@ class DlgCalculate(QtWidgets.QDialog, Ui_DlgCalculate):
         self.pushButton_ld.clicked.connect(self.btn_ld_clicked)
         self.pushButton_forest.clicked.connect(self.btn_forest_clicked)
         self.pushButton_SE.clicked.connect(self.btn_SE_clicked)
+        self.pushButton_vegetation.clicked.connect(self.btn_vegetation_clicked)
+        self.pushButton_medalus.clicked.connect(self.btn_medalus_clicked)
     
     def btn_ld_clicked(self):
         self.close()
@@ -45,6 +51,14 @@ class DlgCalculate(QtWidgets.QDialog, Ui_DlgCalculate):
     def btn_SE_clicked(self):
         self.close()
         result = self.dlgSoilErosion.exec_()
+    
+    def btn_vegetation_clicked(self):
+        self.close()
+        result = self.dlgVegetation.exec_()
+    
+    def btn_medalus_clicked(self):
+        self.close()
+        result = self.dlgMedalus.exec_()
         
     
     

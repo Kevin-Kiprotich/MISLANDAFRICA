@@ -22,7 +22,8 @@ class DlgSDGIndicator(QtWidgets.QDialog, Ui_DlgSDGIndicator):
         self.vegetationIndex = ['NDVI']
         self.EcoDataSources = ['2000','2001','2002']
         self.SOCReferences = ['2000','2001','2002']
-        self.computationYears = fetchComputationYears("SOC")
+        self.computation = "Land Degradation"
+        self.computationYears = fetchComputationYears(self.computation)
         self.countries = [country['name_0'] for country in get_Adm0() if get_Adm0() is not None]
         self.CountryComboBox.addItems(self.countries if self.countries is not None else [])
         self.YearComboBox.addItems(self.computationYears if self.computationYears is not None else [])
@@ -36,7 +37,16 @@ class DlgSDGIndicator(QtWidgets.QDialog, Ui_DlgSDGIndicator):
         self.CountryComboBox.currentTextChanged.connect(self.getRegions)
         self.RegionComboBox.currentTextChanged.connect(self.getSubRegions)
         self.OutputPushButton.clicked.connect(self.fillOutputDestination)
+        self.SourceComboBox.currentTextChanged.connect(self.evaluateIndex)
+        self.SubmitPushButton.clicked.connect(self.compute)
         self.OutputLineEdit.setReadOnly(True)
+        
+    def evaluateIndex(self):
+        if self.SourceComboBox.currentText() == "Modis":
+            self.IndexComboBox.setCurrentIndex(0)
+            self.IndexComboBox.setDisabled(True)
+        if self.SourceComboBox.currentText() == "Landsat":
+            self.IndexComboBox.setDisabled(False)
     
     def fillOutputDestination(self):
         resetLineEditHighlight(self.OutputLineEdit)
@@ -57,7 +67,17 @@ class DlgSDGIndicator(QtWidgets.QDialog, Ui_DlgSDGIndicator):
         self.SubRegionComboBox.setCurrentIndex(-1)
     
     def compute(self):
-        path = "/api/{}/".format(self.IndicatorComboBox.currentText().lower())
+        progress_dialog = QtWidgets.QProgressDialog("Processing...", "Cancel", 0, 100, self)
+        progress_dialog.setWindowTitle("Fetching Land Productivity Raster")
+        progress_dialog.setWindowModality(Qt.WindowModal)
+
+        progress_bar = QtWidgets.QProgressBar(progress_dialog)
+        progress_dialog.setBar(progress_bar)
+
+        progress_dialog.show()
+        QtWidgets.QApplication.processEvents()
+        path = "/degradation/"
+        
         if not self.CountryComboBox.currentText():
             highlightComboBox(self.CountryComboBox)
             QtWidgets.QMessageBox.critical(None, self.tr("Error"),
@@ -71,6 +91,64 @@ class DlgSDGIndicator(QtWidgets.QDialog, Ui_DlgSDGIndicator):
             return
         
         
+        
+        filePath = self.OutputLineEdit.text()
+        payload = {
+            "admin_0": self.country_id,
+            "raster_source": self.SourceComboBox.currentText() if self.SourceComboBox.currentText() == "Modis" else "Landsat 7" if self.SourceComboBox.currentText() == "Landsat" else "",
+            "raster_type":1,
+            "reference_eco_units":49,
+            "reference_raster":12,
+            "end_year":int(self.YearComboBox.currentText()),
+            "cached":self.CacheCheckBox.isChecked(),
+            "start_year":2001,
+            "show_change":True,
+            "veg_index":self.IndexComboBox.currentText(),
+            "transform":"area",
+        }
+        country = self.CountryComboBox.currentText()
+        region = self.RegionComboBox.currentText()
+        subregion = self.SubRegionComboBox.currentText()
+        if country and not region and not subregion:
+            #get the country id
+            for item in countries:
+                if country == item['name_0']:
+                    countryID = item["id"]
+                    break
+            payload["vector"] = countryID
+            payload["admin_level"] = 0
+            
+        elif country and region and not subregion:
+            for item in regions:
+                if region == item['name_1']:
+                    regionID = item["id"]
+                    break
+            
+            payload["vector"] = regionID
+            payload["admin_level"] = 1
+
+        elif country and region and subregion:
+            for item in subregions:
+                if subregion == item['name_2']:
+                    subRegionID = item["id"]
+                    break
+            
+            payload["vector"] = subRegionID
+            payload["admin_level"] = 2
+        
+        # task = threading.Thread(target=fetchRaster, args = (path, payload, filePath, progress_dialog, progress_bar))
+        # task.start()
+        # with ThreadPoolExecutor(max_workers=1) as executor:
+        #     future = executor.submit(fetchRaster, path, payload, filePath, progress_dialog, progress_bar)
+        #     result = future.result()
+        #     print(result)
+        #     if result is not None:
+        #         self.close()
+        result = fetchRaster(path, payload, filePath, progress_dialog, progress_bar,self.computation)
+        if result is not None:
+            self.close()
+        
+        
 class DlgCarbonStock(QtWidgets.QDialog, Ui_DlgCarbonStock):
     def __init__(self, parent=None):
         super(DlgCarbonStock,self).__init__(parent)
@@ -79,7 +157,8 @@ class DlgCarbonStock(QtWidgets.QDialog, Ui_DlgCarbonStock):
         
         self.dataSources = ["ESA CCI-LC"]
         self.SOCReferences = ["2000","2001","2002"]
-        self.computationYears = fetchComputationYears("SOC")
+        self.computation = "SOC"
+        self.computationYears = fetchComputationYears(self.computation)
         self.countries = [country['name_0'] for country in get_Adm0() if get_Adm0() is not None]
         self.CountryComboBox.addItems(self.countries if self.countries is not None else [])
         self.YearComboBox.addItems(self.computationYears if self.computationYears is not None else [])
@@ -91,6 +170,7 @@ class DlgCarbonStock(QtWidgets.QDialog, Ui_DlgCarbonStock):
         self.CountryComboBox.currentTextChanged.connect(self.getRegions)
         self.RegionComboBox.currentTextChanged.connect(self.getSubRegions)
         self.OutputPushButton.clicked.connect(self.fillOutputDestination)
+        self.SubmitPushButton.clicked.connect(self.compute)
         self.OutputLineEdit.setReadOnly(True)
     
     def fillOutputDestination(self):
@@ -111,19 +191,74 @@ class DlgCarbonStock(QtWidgets.QDialog, Ui_DlgCarbonStock):
         self.SubRegionComboBox.addItems(self.subregions if self.subregions is not None else [])
         self.SubRegionComboBox.setCurrentIndex(-1)
     
+    
     def compute(self):
-        path = "/api/{}/".format(self.IndicatorComboBox.currentText().lower())
+        progress_dialog = QtWidgets.QProgressDialog("Processing...", "Cancel", 0, 100, self)
+        progress_dialog.setWindowTitle("Fetching Carbon Stock Raster")
+        progress_dialog.setWindowModality(Qt.WindowModal)
+
+        progress_bar = QtWidgets.QProgressBar(progress_dialog)
+        progress_dialog.setBar(progress_bar)
+
+        progress_dialog.show()
+        QtWidgets.QApplication.processEvents()
+        path = "/soc/"
         if not self.CountryComboBox.currentText():
             highlightComboBox(self.CountryComboBox)
             QtWidgets.QMessageBox.critical(None, self.tr("Error"),
-                                       self.tr("Please select a country"))
+                                    self.tr("Please select a country"))
             return
         
         if not self.OutputLineEdit.text():
             highlightLineEdit(self.OutputLineEdit)
             QtWidgets.QMessageBox.critical(None, self.tr("Error"),
-                                       self.tr("Please provide an output file path"))
+                                    self.tr("Please provide an output file path"))
             return
+        filePath = self.OutputLineEdit.text()
+        payload = {
+            "admin_0": self.country_id,
+            "cached":self.CacheCheckBox.isChecked(),
+            "raster_type":1,
+            "reference_raster":12,
+            "reference_soc": 12,
+            "show_change":True,
+            "start_year":2000,
+            "end_year":int(self.YearComboBox.currentText())
+        }
+            
+        country = self.CountryComboBox.currentText()
+        region = self.RegionComboBox.currentText()
+        subregion = self.SubRegionComboBox.currentText()
+        if country and not region and not subregion:
+            #get the country id
+            for item in countries:
+                if country == item['name_0']:
+                    countryID = item["id"]
+                    break
+            payload["vector"] = countryID
+            payload["admin_level"] = 0
+            
+        elif country and region and not subregion:
+            for item in regions:
+                if region == item['name_1']:
+                    regionID = item["id"]
+                    break
+            
+            payload["vector"] = regionID
+            payload["admin_level"] = 1
+
+        elif country and region and subregion:
+            for item in subregions:
+                if subregion == item['name_2']:
+                    subRegionID = item["id"]
+                    break
+            
+            payload["vector"] = subRegionID
+            payload["admin_level"] = 2
+            
+        result = fetchRaster(path, payload, filePath, progress_dialog, progress_bar,self.computation)
+        if result is not None:
+            self.close()
     
         
         
@@ -135,25 +270,51 @@ class DlgLandCover(QtWidgets.QDialog, Ui_DlgLandCover):
         self.setupUi(self)
         self.analysisOptions = ['Land Cover', 'Land Cover Change']
         self.dataSources = ["ESA CCI-LC"]
-        self.computationYears = fetchComputationYears("LULC")
+        self.computation = "LULC"
+        self.computationYears = fetchComputationYears(self.computation)
         self.countries = [country['name_0'] for country in get_Adm0() if get_Adm0() is not None]
         self.CountryComboBox.addItems(self.countries if self.countries is not None else [])
         self.YearComboBox.addItems(self.computationYears if self.computationYears is not None else [])
+        self.StartYearComboBox.addItems(self.computationYears if self.computationYears is not None else [])
+        self.EndYearComboBox.addItems(self.computationYears if self.computationYears is not None else [])
         self.OptionComboBox.addItems(self.analysisOptions)
         self.SourceComboBox.addItems(self.dataSources)
+        self.YearsWidget.setVisible(False)
         self.CountryComboBox.setCurrentIndex(-1)
+        self.YearComboBox.setCurrentIndex(-1)
+        self.StartYearComboBox.setCurrentIndex(-1)
+        self.EndYearComboBox.setCurrentIndex(-1)
         
         #map functions to buttons and combo boxes
         self.CountryComboBox.currentTextChanged.connect(self.getRegions)
         self.RegionComboBox.currentTextChanged.connect(self.getSubRegions)
         self.OutputPushButton.clicked.connect(self.fillOutputDestination)
+        self.OptionComboBox.currentTextChanged.connect(self.resetComputationYears)
+        self.SubmitPushButton.clicked.connect(self.compute)
         self.OutputLineEdit.setReadOnly(True)
+    
     
     def fillOutputDestination(self):
         resetLineEditHighlight(self.OutputLineEdit)
         filepath = getOutputDestination(self)
         self.OutputLineEdit.setText(filepath)
-        
+    
+    def resetComputationYears(self):
+        if self.OptionComboBox.currentText() == "Land Cover":
+            self.computation = "LULC"
+            self.computationYears = fetchComputationYears(self.computation)
+            self.YearsWidget.setVisible(False)
+            self.PeriodWidget.setVisible(True)
+            self.StartYearComboBox.setCurrentIndex(-1)
+            self.EndYearComboBox.setCurrentIndex(-1)
+        else:
+            self.computation = "LULC Change"
+            self.computationYears = fetchComputationYears(self.computation)
+            self.YearsWidget.setVisible(True)
+            self.PeriodWidget.setVisible(False)
+            self.YearComboBox.setCurrentIndex(-1)
+            
+       
     def getRegions(self):
         resetComboBoxHighlight(self.CountryComboBox)
         self.RegionComboBox.clear()
@@ -168,7 +329,16 @@ class DlgLandCover(QtWidgets.QDialog, Ui_DlgLandCover):
         self.SubRegionComboBox.setCurrentIndex(-1)
     
     def compute(self):
-        path = "/api/{}/".format(self.IndicatorComboBox.currentText().lower())
+        progress_dialog = QtWidgets.QProgressDialog("Processing...", "Cancel", 0, 100, self)
+        progress_dialog.setWindowTitle("Fetching Land Cover Raster")
+        progress_dialog.setWindowModality(Qt.WindowModal)
+
+        progress_bar = QtWidgets.QProgressBar(progress_dialog)
+        progress_dialog.setBar(progress_bar)
+
+        progress_dialog.show()
+        QtWidgets.QApplication.processEvents()
+        path = "/lulc/"
         if not self.CountryComboBox.currentText():
             highlightComboBox(self.CountryComboBox)
             QtWidgets.QMessageBox.critical(None, self.tr("Error"),
@@ -180,7 +350,57 @@ class DlgLandCover(QtWidgets.QDialog, Ui_DlgLandCover):
             QtWidgets.QMessageBox.critical(None, self.tr("Error"),
                                        self.tr("Please provide an output file path"))
             return
+        filePath = self.OutputLineEdit.text()
+        payload = {
+            "admin_0": self.country_id,
+            "cached":self.CacheCheckBox.isChecked(),
+            "raster_type":1,
+        }
         
+        if self.computation == "LULC":
+            payload["end_year"] = ""
+            payload["show_change"] = 0
+            payload["start_year"] = str(self.YearComboBox.currentText())
+        elif self.computation == "LULC Change":
+            payload["end_year"] = self.EndYearComboBox.currentText()
+            payload["show_change"] = 1
+            payload["start_year"] = self.StartYearComboBox.currentText()
+            
+        country = self.CountryComboBox.currentText()
+        region = self.RegionComboBox.currentText()
+        subregion = self.SubRegionComboBox.currentText()
+        if country and not region and not subregion:
+            #get the country id
+            for item in countries:
+                if country == item['name_0']:
+                    countryID = item["id"]
+                    break
+            payload["vector"] = countryID
+            payload["admin_level"] = 0
+            
+        elif country and region and not subregion:
+            for item in regions:
+                if region == item['name_1']:
+                    regionID = item["id"]
+                    break
+            
+            payload["vector"] = regionID
+            payload["admin_level"] = 1
+
+        elif country and region and subregion:
+            for item in subregions:
+                if subregion == item['name_2']:
+                    subRegionID = item["id"]
+                    break
+            
+            payload["vector"] = subRegionID
+            payload["admin_level"] = 2
+            
+        result = fetchRaster(path, payload, filePath, progress_dialog, progress_bar,self.computation)
+        if result is not None:
+            self.close()
+
+      
 class DlgLandProductivity(QtWidgets.QDialog, Ui_DlgLandProductivity):
     def __init__(self, parent=None):
         super(DlgLandProductivity,self).__init__(parent)
@@ -195,6 +415,8 @@ class DlgLandProductivity(QtWidgets.QDialog, Ui_DlgLandProductivity):
         for country in get_Adm0():
             self.countries.append(country['name_0'])
         self.computationYears = fetchComputationYears(self.computation)
+        if self.computationYears is None:
+            self.close()
         self.CountryComboBox.addItems(self.countries if self.countries is not None else [])
         self.YearComboBox.addItems(self.computationYears if self.computationYears is not None else [])
         self.IndicatorComboBox.addItems(self.productivityIndicators)
@@ -272,9 +494,7 @@ class DlgLandProductivity(QtWidgets.QDialog, Ui_DlgLandProductivity):
                                        self.tr("Please provide an output file path"))
             return
         
-        mb.pushMessage(QtWidgets.QApplication.translate("MISLAND", "Computing ..."),
-                           QtWidgets.QApplication.translate("MISLAND", "Fetching Land Productivity Data"),
-                           level=0, duration=5)
+        
         
         filePath = self.OutputLineEdit.text()
         payload = {
@@ -328,15 +548,6 @@ class DlgLandProductivity(QtWidgets.QDialog, Ui_DlgLandProductivity):
         #     print(result)
         #     if result is not None:
         #         self.close()
-        result = fetchRaster(path, payload, filePath, progress_dialog, progress_bar)
+        result = fetchRaster(path, payload, filePath, progress_dialog, progress_bar,self.computation)
         if result is not None:
-            self.close()
-        
-            
-        
-    
-    
-        
-        
-        
-    
+            self.close()    

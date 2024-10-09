@@ -5,8 +5,10 @@ from .data.admin_bounds import countries, regions, subregions
 from . import log
 from .api import get_access_token
 import requests
+import os
 
 API_URL = 'http://misland-africa.oss-online.org:1337/api'
+pluginDir = os.path.dirname(os.path.abspath(__file__))
 
 
 def get_Adm0():
@@ -59,6 +61,18 @@ def show_error_message(message):
         msg_box.setWindowTitle("Error")
         msg_box.setText(message)
         msg_box.exec_()
+        
+def show_info_message(message):
+    """
+    Shows an information message.
+    Args:
+        message (str): Information message to be displayed.
+    """
+    msg_box = QMessageBox()
+    msg_box.setIcon(QMessageBox.Information)  # Change to Information icon
+    msg_box.setWindowTitle("Information")  # Update window title
+    msg_box.setText(message)
+    msg_box.exec_()
         
 def populate_region(country: str):
     """
@@ -114,6 +128,9 @@ def fetchComputationYears(computation_type: str):
                 if computation_type == item['computation_type']:
                     years = item["published_years"]
                     return sorted(list(map(str, years)))
+        elif str(response.status_code).startswith('5'):
+            show_error_message("Could not connect to the MISLAND-AFRICA server to fetch computation years. Error code: {}".format(response.status_code))
+            return None
         else:
             print(response.text)
             show_error_message("Error fetching computation years")
@@ -146,7 +163,7 @@ def getOutputDestination(parent=None):
         else:
             return ""
         
-def fetchRaster(path, payload, filePath, progressDialog, progressBar):
+def fetchRaster(path, payload, filePath, progressDialog, progressBar, computation):
     token = get_access_token()
     try:
         progressDialog.setLabelText("Fetching Data ...")
@@ -162,6 +179,15 @@ def fetchRaster(path, payload, filePath, progressDialog, progressBar):
                 show_error_message(raster_data['error'])
                 progressDialog.close()
                 return None
+            if "success" in raster_data.keys() and "message" in raster_data.keys():
+                if raster_data['success'] == "false":
+                    show_error_message(raster_data['message'])
+                    progressDialog.close()
+                    return None
+                else:
+                    show_info_message(raster_data['message'])
+                    progressDialog.close()
+                    return None
             raster_response = requests.get(raster_data["rasterfile"])
             progressBar.setValue(50)
             if raster_response.status_code == 200:
@@ -170,7 +196,8 @@ def fetchRaster(path, payload, filePath, progressDialog, progressBar):
                 with open(filePath , "wb") as file:
                     file.write(raster_response.content)
                 
-                sldURL="http://misland-africa.oss-online.org:8600/geoserver/ldms/wms?service=WMS&version=1.1.1&request=GetStyles&layers={}".format(raster_data["tiles"]["layer"])
+                qml_path = os.path.join(pluginDir, "data/sld/{}.qml".format(computation))
+                print(qml_path)
                 # Step 1: Load the GeoTIFF into QGIS
                 progressDialog.setLabelText("Loading raster to QGIS...")
                 progressBar.setValue(70)
@@ -183,14 +210,21 @@ def fetchRaster(path, payload, filePath, progressDialog, progressBar):
                     return None
                 else:
                     progressBar.setValue(80)
-                    QgsProject.instance().addMapLayer(raster_layer)
                     log("GeoTIFF loaded successfully!")
-                    project.instance().addMapLayer(raster_layer)
+                    
                     # Step 2: Apply the SLD style from the URL (or from a local file)
                     progressDialog.setLabelText("Loading Style Layer...")
                     progressBar.setValue(90)
-                    if raster_layer.loadSldStyle(sldURL):
+                    log(computation)
+                    print(computation)
+                    result = raster_layer.loadNamedStyle(qml_path)
+                    print(result)
+                    if result[1]:
+                        raster_layer.triggerRepaint()
                         project.instance().addMapLayer(raster_layer)
+                        log(f"Current style: {raster_layer.styleManager().currentStyle()}")
+                        
+                        iface.mapCanvas().refresh()
                         progressDialog.setLabelText("Done...")
                         progressBar.setValue(100)
                         progressDialog.close()
@@ -199,7 +233,7 @@ def fetchRaster(path, payload, filePath, progressDialog, progressBar):
                     else:
                         log("Failed to apply the SLD style.")
                         progressDialog.close()
-                        show_error_message("Failed to apply the SLD style")
+                        show_error_message(f"Failed to apply the SLD style.\n {result[0]}")
                         return None
                     return True
             else:
