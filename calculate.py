@@ -1,3 +1,4 @@
+from .forests import DlgForestLoss, DlgForestCarbonEmission, DlgForestFireRisk, DlgForestFireAssessment
 from .gui.DlgCalculate import Ui_DlgCalculate
 from .gui.DlgSDG import Ui_DlgSDG
 from .gui.DlgForests import Ui_DlgForests
@@ -8,7 +9,6 @@ from .medalus import DlgMedalus
 from .CVI import DlgCoastalVulnerabilityIndex
 from .water_erosion import DlgWaterErosion
 from .wind_erosion import DlgWindErosion
-from .forests import DlgForestLoss, DlgForestCarbonEmission, DlgForestFireRisk, DlgForestFireAssessment
 from qgis.PyQt import QtWidgets
 
 
