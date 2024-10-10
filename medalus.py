@@ -113,9 +113,6 @@ class DlgMedalus(QtWidgets.QDialog, Ui_DlgMedalus):
             "end_year":int(self.YearComboBox.currentText()),
             "cached":self.CacheCheckBox.isChecked(),
             "start_year":int(self.YearComboBox.currentText()),
-            "show_change":1,
-            "veg_index":self.IndexComboBox.currentText(),
-            "transform":"area",
         }
         country = self.CountryComboBox.currentText()
         region = self.RegionComboBox.currentText()

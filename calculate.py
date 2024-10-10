@@ -5,6 +5,7 @@ from .gui.DlgSoilErosion import Ui_DlgSoilErosion
 from .SDG import *
 from .vegetation import DlgVegetation
 from .medalus import DlgMedalus
+from .CVI import DlgCoastalVulnerabilityIndex
 from qgis.PyQt import QtWidgets
 
 
@@ -19,6 +20,7 @@ class DlgCalculate(QtWidgets.QDialog, Ui_DlgCalculate):
         self.dlgSoilErosion = DlgSoilErosion()
         self.dlgVegetation = DlgVegetation()
         self.dlgMedalus = DlgMedalus()
+        self.dlgCVI = DlgCoastalVulnerabilityIndex()
     #     self.dlg_calculate_tc = DlgCalculateTC()
     #     self.dlg_calculate_rest_biomass = DlgCalculateRestBiomass()
     #     # self.dlg_calculate_urban = DlgCalculateUrban()
@@ -39,6 +41,7 @@ class DlgCalculate(QtWidgets.QDialog, Ui_DlgCalculate):
         self.pushButton_SE.clicked.connect(self.btn_SE_clicked)
         self.pushButton_vegetation.clicked.connect(self.btn_vegetation_clicked)
         self.pushButton_medalus.clicked.connect(self.btn_medalus_clicked)
+        self.pushbutton_CE.clicked.connect(self.btn_CE_clicked)
     
     def btn_ld_clicked(self):
         self.close()
@@ -59,6 +62,10 @@ class DlgCalculate(QtWidgets.QDialog, Ui_DlgCalculate):
     def btn_medalus_clicked(self):
         self.close()
         result = self.dlgMedalus.exec_()
+        
+    def btn_CE_clicked(self):
+        self.close()
+        result = self.dlgCVI.exec_()
         
     
     
