@@ -6,6 +6,8 @@ from .SDG import *
 from .vegetation import DlgVegetation
 from .medalus import DlgMedalus
 from .CVI import DlgCoastalVulnerabilityIndex
+from .water_erosion import DlgWaterErosion
+from .wind_erosion import DlgWindErosion
 from qgis.PyQt import QtWidgets
 
 
@@ -108,3 +110,14 @@ class DlgSoilErosion(QtWidgets.QDialog, Ui_DlgSoilErosion):
         super(DlgSoilErosion, self).__init__(parent)
 
         self.setupUi(self)
+        
+        self.WaterPushButton.clicked.connect(self.openWaterErosion)
+        self.WindPushButton.clicked.connect(self.openWindErosion)
+        
+    def openWaterErosion(self):
+        self.close()
+        result = DlgWaterErosion().exec_()
+        
+    def openWindErosion(self):
+        self.close()
+        result = DlgWindErosion().exec_()
