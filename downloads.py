@@ -2,6 +2,7 @@ from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QFileDialog
 from qgis.core import QgsRasterLayer, QgsProject
 from qgis.utils import iface
 from .data.admin_bounds import countries, regions, subregions
+from .data.computation_years import computationYears
 from . import log
 from .api import get_access_token
 import requests
@@ -119,34 +120,11 @@ def fetchComputationYears(computation_type: str):
         Returns:
             list: A sorted list of computation years associated with the given computation type.
     """
-    path="/computationyears/"
-    try:
-        response = requests.get(API_URL+path)
-        if response.status_code == 200:
-            computations=response.json()
-            for item in computations:
-                if computation_type == item['computation_type']:
-                    years = item["published_years"]
-                    return sorted(list(map(str, years)))
-        elif str(response.status_code).startswith('5'):
-            show_error_message("Could not connect to the MISLAND-AFRICA server to fetch computation years. Error code: {}".format(response.status_code))
-            return None
-        else:
-            print(response.text)
-            show_error_message("Error fetching computation years")
-            return None
-    except requests.exceptions.ConnectionError:
-        log("Unable to access the MISLAND server")
-        QMessageBox.critical(None,
-                                    QApplication.translate("MISLAND", "Error"),
-                                    QApplication.translate("MISLAND", u"Unable to login to MISLAND-AFRICA server. Check your internet connection."))
-        return None
-    except requests.exceptions.Timeout:
-        log('API unable to login - general error')
-        QMessageBox.critical(None,
-                                    QApplication.translate("MISLAND", "Error"),
-                                    QApplication.translate("MISLAND", u"Unable to connect to the MISLAND-AFRICA server."))
-        return None
+    computations=computationYears
+    for item in computations:
+        if computation_type == item['computation_type']:
+            years = item["published_years"]
+            return sorted(list(map(str, years)))
     
 def getOutputDestination(parent=None):
         """

@@ -8,7 +8,7 @@ from .medalus import DlgMedalus
 from .CVI import DlgCoastalVulnerabilityIndex
 from .water_erosion import DlgWaterErosion
 from .wind_erosion import DlgWindErosion
-from .forests import DlgForestLoss
+from .forests import DlgForestLoss, DlgForestCarbonEmission, DlgForestFireRisk, DlgForestFireAssessment
 from qgis.PyQt import QtWidgets
 
 
@@ -107,11 +107,27 @@ class DlgForests(QtWidgets.QDialog, Ui_DlgForests):
         self.setupUi(self)
         
         self.pushButton_fl.clicked.connect(self.openForestLoss)
+        self.pushButton_fc.clicked.connect(self.openForestCarbonEmission)
+        self.pushButton_ffr.clicked.connect(self.openForestFireRisk)
+        self.pushButton_ffa.clicked.connect(self.openForestFireAssessment)
         
     def openForestLoss(self):
         self.close()
         result = DlgForestLoss().exec_()
-        
+    
+    def openForestCarbonEmission(self):
+        self.close()
+        result = DlgForestCarbonEmission().exec_()
+    
+    def openForestFireRisk(self):
+        self.close()
+        result = DlgForestFireRisk().exec_()
+    
+    def openForestFireAssessment(self):
+        self.close()
+        result = DlgForestFireAssessment().exec_()
+
+
 class DlgSoilErosion(QtWidgets.QDialog, Ui_DlgSoilErosion):
     def __init__(self, parent=None):
         super(DlgSoilErosion, self).__init__(parent)

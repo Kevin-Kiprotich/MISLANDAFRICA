@@ -16,6 +16,11 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="font">
+   <font>
+    <family>MS Reference Sans Serif</family>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
@@ -208,6 +213,12 @@
             <height>40</height>
            </size>
           </property>
+          <property name="displayFormat">
+           <string>yyyy-MM-dd</string>
+          </property>
+          <property name="calendarPopup">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
        </layout>
@@ -246,6 +257,12 @@
             <width>16777215</width>
             <height>40</height>
            </size>
+          </property>
+          <property name="displayFormat">
+           <string>yyyy-MM-dd</string>
+          </property>
+          <property name="calendarPopup">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -332,6 +349,7 @@
          <widget class="QCheckBox" name="CacheCheckBox">
           <property name="font">
            <font>
+            <family>MS Reference Sans Serif</family>
             <pointsize>10</pointsize>
            </font>
           </property>

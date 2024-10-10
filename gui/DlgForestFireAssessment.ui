@@ -10,6 +10,11 @@
     <height>411</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>MS Reference Sans Serif</family>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
@@ -180,33 +185,6 @@
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_14">
-        <item>
-         <widget class="QLabel" name="label_13">
-          <property name="text">
-           <string>Select Data Source</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="SourceComboBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>40</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
          <widget class="QLabel" name="label_3">
@@ -252,6 +230,12 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="displayFormat">
+               <string>yyyy-MM-dd</string>
+              </property>
+              <property name="calendarPopup">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
            </layout>
@@ -284,6 +268,12 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="displayFormat">
+               <string>yyyy-MM-dd</string>
+              </property>
+              <property name="calendarPopup">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -339,6 +329,12 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="displayFormat">
+               <string>yyyy-MM-dd</string>
+              </property>
+              <property name="calendarPopup">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
            </layout>
@@ -372,11 +368,44 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="displayFormat">
+               <string>yyyy-MM-dd</string>
+              </property>
+              <property name="calendarPopup">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
            </layout>
           </item>
          </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_14">
+        <item>
+         <widget class="QLabel" name="label_13">
+          <property name="text">
+           <string>Select Data Source</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="SourceComboBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>40</height>
+           </size>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -461,6 +490,7 @@
          <widget class="QCheckBox" name="CacheCheckBox">
           <property name="font">
            <font>
+            <family>MS Reference Sans Serif</family>
             <pointsize>10</pointsize>
            </font>
           </property>
