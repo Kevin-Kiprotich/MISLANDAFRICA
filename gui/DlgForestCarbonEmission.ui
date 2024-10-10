@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>395</height>
+    <height>504</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -266,7 +266,7 @@
          <string>Advanced Parameters</string>
         </property>
         <property name="collapsed">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_9">
          <item>
@@ -291,6 +291,12 @@
                <width>16777215</width>
                <height>40</height>
               </size>
+             </property>
+             <property name="maximum">
+              <number>100</number>
+             </property>
+             <property name="value">
+              <number>0</number>
              </property>
             </widget>
            </item>
@@ -318,6 +324,9 @@
                <width>16777215</width>
                <height>40</height>
               </size>
+             </property>
+             <property name="maximum">
+              <number>100</number>
              </property>
             </widget>
            </item>
@@ -360,7 +369,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="ThresholdSpinBox_2">
+            <widget class="QSpinBox" name="ProportionSpinBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
                <horstretch>0</horstretch>
@@ -372,6 +381,9 @@
                <width>16777215</width>
                <height>40</height>
               </size>
+             </property>
+             <property name="maximum">
+              <number>100</number>
              </property>
             </widget>
            </item>
@@ -398,7 +410,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
-           <widget class="QLineEdit" name="OutputLineEdit_2">
+           <widget class="QLineEdit" name="OutputLineEdit">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
               <horstretch>0</horstretch>
@@ -414,7 +426,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="OutputPushButton_2">
+           <widget class="QPushButton" name="OutputPushButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
               <horstretch>0</horstretch>
@@ -458,7 +470,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="CacheCheckBox_3">
+         <widget class="QCheckBox" name="CacheCheckBox">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
@@ -470,7 +482,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="SubmitPushButton_3">
+         <widget class="QPushButton" name="SubmitPushButton">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
             <horstretch>0</horstretch>

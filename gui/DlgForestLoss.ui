@@ -278,7 +278,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
-           <widget class="QLineEdit" name="OutputLineEdit_2">
+           <widget class="QLineEdit" name="OutputLineEdit">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
               <horstretch>0</horstretch>
@@ -294,7 +294,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="OutputPushButton_2">
+           <widget class="QPushButton" name="OutputPushButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
               <horstretch>0</horstretch>
@@ -338,7 +338,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="CacheCheckBox_3">
+         <widget class="QCheckBox" name="CacheCheckBox">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
@@ -350,7 +350,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="SubmitPushButton_3">
+         <widget class="QPushButton" name="SubmitPushButton">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
             <horstretch>0</horstretch>
