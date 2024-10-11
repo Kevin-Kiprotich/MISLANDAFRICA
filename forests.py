@@ -2,6 +2,8 @@ from .gui.DlgForestLoss import Ui_DlgForestLoss
 from .gui.DlgForestCarbonEmission import Ui_DlgForestCarbonEmission
 from .gui.DlgForestFireRisk import Ui_DlgForestFireRisk
 from .gui.DlgForestFireAssessment import Ui_DlgForestFireAssessment
+from .algorithms import dissolvePolygons
+from qgis.core import QgsVectorLayer
 from .downloads import *
 from .Styles import *
 from qgis.PyQt.QtCore import Qt, QDate
@@ -30,6 +32,15 @@ class DlgForestLoss(QtWidgets.QDialog, Ui_DlgForestLoss):
         self.RegionComboBox.currentTextChanged.connect(self.getSubRegions)
         self.OutputPushButton.clicked.connect(self.fillOutputDestination)
         self.SubmitPushButton.clicked.connect(self.compute)
+        
+        #Custom Shapefile
+        self.CustomComboBox.addItems(getLayers() if getLayers() is not None else [])
+        self.CustomPushButton.clicked.connect(self.fetchShapefile)
+    
+    def fetchShapefile(self):
+        path = getShapefile(self, self.CustomGroupBox.isChecked())
+        if path is not None:
+            self.CustomComboBox.setCurrentText(path)
              
     def fillOutputDestination(self):
         resetLineEditHighlight(self.OutputLineEdit)
@@ -84,6 +95,40 @@ class DlgForestLoss(QtWidgets.QDialog, Ui_DlgForestLoss):
             "cached":self.CacheCheckBox.isChecked(),
             "start_year":2000,
         }
+        
+        if self.CustomGroupBox.isChecked():
+            file = self.CustomComboBox.currentText()
+            if not file:
+                show_error_message("Custom Area not provided")
+                return
+            if os.path.isfile(file):
+                # Load the vector layer using QGIS's QgsVectorLayer class
+                layer = QgsVectorLayer(file, "layer_name", "ogr")
+                
+                if not layer.isValid():
+                    show_error_message(f"Failed to load the file: {file}")
+                    return None
+
+                # Use the updated QGIS dissolvePolygons function for QGIS layers
+                customCoords = dissolvePolygons(layer,filePath) # Using the new QGIS-based dissolvePolygons function
+                if customCoords is None:
+                    return None
+                
+                payload["custom_coords"] = customCoords
+            else:
+                # Handle QGIS layer input
+                layer = QgsProject.instance().mapLayersByName(file)[0]
+                if layer:
+                    # Use the updated QGIS dissolvePolygons function for QGIS layers
+                    customCoords = dissolvePolygons(layer,filePath)  # Using the new QGIS-based dissolvePolygons function
+                    if customCoords is None:
+                        return None
+                    
+                    payload["custom_coords"] = customCoords
+                else:
+                    show_error_message(f"Layer '{file}' not found in QGIS.")
+                    return None
+        
         country = self.CountryComboBox.currentText()
         region = self.RegionComboBox.currentText()
         subregion = self.SubRegionComboBox.currentText()
@@ -153,6 +198,15 @@ class DlgForestCarbonEmission(QtWidgets.QDialog, Ui_DlgForestCarbonEmission):
         self.RegionComboBox.currentTextChanged.connect(self.getSubRegions)
         self.OutputPushButton.clicked.connect(self.fillOutputDestination)
         self.SubmitPushButton.clicked.connect(self.compute)
+        
+        #Custom Shapefile
+        self.CustomComboBox.addItems(getLayers() if getLayers() is not None else [])
+        self.CustomPushButton.clicked.connect(self.fetchShapefile)
+    
+    def fetchShapefile(self):
+        path = getShapefile(self, self.CustomGroupBox.isChecked())
+        if path is not None:
+            self.CustomComboBox.setCurrentText(path)
              
     def fillOutputDestination(self):
         resetLineEditHighlight(self.OutputLineEdit)
@@ -211,6 +265,40 @@ class DlgForestCarbonEmission(QtWidgets.QDialog, Ui_DlgForestCarbonEmission):
             "degradation_emission_proportion": int(self.ProportionSpinBox.value()),
             "carbon_stock": float(self.StockDoubleSpinBox.value()),
             }
+        
+        if self.CustomGroupBox.isChecked():
+            file = self.CustomComboBox.currentText()
+            if not file:
+                show_error_message("Custom Area not provided")
+                return
+            if os.path.isfile(file):
+                # Load the vector layer using QGIS's QgsVectorLayer class
+                layer = QgsVectorLayer(file, "layer_name", "ogr")
+                
+                if not layer.isValid():
+                    show_error_message(f"Failed to load the file: {file}")
+                    return None
+
+                # Use the updated QGIS dissolvePolygons function for QGIS layers
+                customCoords = dissolvePolygons(layer,filePath) # Using the new QGIS-based dissolvePolygons function
+                if customCoords is None:
+                    return None
+                
+                payload["custom_coords"] = customCoords
+            else:
+                # Handle QGIS layer input
+                layer = QgsProject.instance().mapLayersByName(file)[0]
+                if layer:
+                    # Use the updated QGIS dissolvePolygons function for QGIS layers
+                    customCoords = dissolvePolygons(layer,filePath)  # Using the new QGIS-based dissolvePolygons function
+                    if customCoords is None:
+                        return None
+                    
+                    payload["custom_coords"] = customCoords
+                else:
+                    show_error_message(f"Layer '{file}' not found in QGIS.")
+                    return None
+        
         country = self.CountryComboBox.currentText()
         region = self.RegionComboBox.currentText()
         subregion = self.SubRegionComboBox.currentText()
@@ -275,6 +363,15 @@ class DlgForestFireRisk(QtWidgets.QDialog, Ui_DlgForestFireRisk):
         self.OutputPushButton.clicked.connect(self.fillOutputDestination)
         self.StartDateEdit.dateChanged.connect(self.updateDates)
         self.SubmitPushButton.clicked.connect(self.compute)
+        
+        #Custom Shapefile
+        self.CustomComboBox.addItems(getLayers() if getLayers() is not None else [])
+        self.CustomPushButton.clicked.connect(self.fetchShapefile)
+    
+    def fetchShapefile(self):
+        path = getShapefile(self, self.CustomGroupBox.isChecked())
+        if path is not None:
+            self.CustomComboBox.setCurrentText(path)
 
     def updateDates(self):
         self.EndDateEdit.setDate(self.StartDateEdit.date())
@@ -327,10 +424,43 @@ class DlgForestFireRisk(QtWidgets.QDialog, Ui_DlgForestFireRisk):
         filePath = self.OutputLineEdit.text()
         payload = {
             "admin_0": self.country_id,
-            "end_year":self.EndDateEdit.date(),
+            "end_date":self.EndDateEdit.date().toString("yyyy-MM-dd"),
             "cached":self.CacheCheckBox.isChecked(),
-            "start_year":self.StartDateEdit.date(),
+            "start_date":self.StartDateEdit.date().toString("yyyy-MM-dd"),
             }
+        
+        if self.CustomGroupBox.isChecked():
+            file = self.CustomComboBox.currentText()
+            if not file:
+                show_error_message("Custom Area not provided")
+                return
+            if os.path.isfile(file):
+                # Load the vector layer using QGIS's QgsVectorLayer class
+                layer = QgsVectorLayer(file, "layer_name", "ogr")
+                
+                if not layer.isValid():
+                    show_error_message(f"Failed to load the file: {file}")
+                    return None
+
+                # Use the updated QGIS dissolvePolygons function for QGIS layers
+                customCoords = dissolvePolygons(layer,filePath) # Using the new QGIS-based dissolvePolygons function
+                if customCoords is None:
+                    return None
+                
+                payload["custom_coords"] = customCoords
+            else:
+                # Handle QGIS layer input
+                layer = QgsProject.instance().mapLayersByName(file)[0]
+                if layer:
+                    # Use the updated QGIS dissolvePolygons function for QGIS layers
+                    customCoords = dissolvePolygons(layer,filePath)  # Using the new QGIS-based dissolvePolygons function
+                    if customCoords is None:
+                        return None
+                    
+                    payload["custom_coords"] = customCoords
+                else:
+                    show_error_message(f"Layer '{file}' not found in QGIS.")
+                    return None
         
         country = self.CountryComboBox.currentText()
         region = self.RegionComboBox.currentText()
@@ -401,6 +531,15 @@ class DlgForestFireAssessment(QtWidgets.QDialog, Ui_DlgForestFireAssessment):
         self.PreEndDateEdit.dateChanged.connect(self.updatePostStartDates)
         self.PostStartDateEdit.dateChanged.connect(self.updatePostEndDates)
         self.SubmitPushButton.clicked.connect(self.compute)
+        
+        #Custom Shapefile
+        self.CustomComboBox.addItems(getLayers() if getLayers() is not None else [])
+        self.CustomPushButton.clicked.connect(self.fetchShapefile)
+    
+    def fetchShapefile(self):
+        path = getShapefile(self, self.CustomGroupBox.isChecked())
+        if path is not None:
+            self.CustomComboBox.setCurrentText(path)
 
     def updatePreEndDates(self):
         self.PreEndDateEdit.setDate(self.StartDateEdit.date())
@@ -462,14 +601,47 @@ class DlgForestFireAssessment(QtWidgets.QDialog, Ui_DlgForestFireAssessment):
         payload = {
             "admin_0": self.country_id,
             "cached":self.CacheCheckBox.isChecked(),
-            "postfire_end": self.PostEndDateEdit.date(),
-            "postfire_start": self.PostStartDateEdit.date(),
-            "prefire_end": self.PreEndDateEdit.date(),
-            "prefire_start": self.PreStartDateEdit.date(),
+            "postfire_end": self.PostEndDateEdit.date().toString("yyyy-MM-dd"),
+            "postfire_start": self.PostStartDateEdit.date().toString("yyyy-MM-dd"),
+            "prefire_end": self.PreEndDateEdit.date().toString("yyyy-MM-dd"),
+            "prefire_start": self.PreStartDateEdit.date().toString("yyyy-MM-dd"),
             "raster_source": self.SourceComboBox.currentText() if self.SourceComboBox.currentText() == "Sentinel 2" else "Landsat 8" if self.SourceComboBox.currentText() == "Landsat" else "",
             "raster_type": 1,
             "show_change": 1,
         }
+        
+        if self.CustomGroupBox.isChecked():
+            file = self.CustomComboBox.currentText()
+            if not file:
+                show_error_message("Custom Area not provided")
+                return
+            if os.path.isfile(file):
+                # Load the vector layer using QGIS's QgsVectorLayer class
+                layer = QgsVectorLayer(file, "layer_name", "ogr")
+                
+                if not layer.isValid():
+                    show_error_message(f"Failed to load the file: {file}")
+                    return None
+
+                # Use the updated QGIS dissolvePolygons function for QGIS layers
+                customCoords = dissolvePolygons(layer,filePath) # Using the new QGIS-based dissolvePolygons function
+                if customCoords is None:
+                    return None
+                
+                payload["custom_coords"] = customCoords
+            else:
+                # Handle QGIS layer input
+                layer = QgsProject.instance().mapLayersByName(file)[0]
+                if layer:
+                    # Use the updated QGIS dissolvePolygons function for QGIS layers
+                    customCoords = dissolvePolygons(layer,filePath)  # Using the new QGIS-based dissolvePolygons function
+                    if customCoords is None:
+                        return None
+                    
+                    payload["custom_coords"] = customCoords
+                else:
+                    show_error_message(f"Layer '{file}' not found in QGIS.")
+                    return None
         
         country = self.CountryComboBox.currentText()
         region = self.RegionComboBox.currentText()

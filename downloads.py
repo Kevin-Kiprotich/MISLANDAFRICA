@@ -144,6 +144,7 @@ def getOutputDestination(parent=None):
         
 def fetchRaster(path, payload, filePath, progressDialog, progressBar, computation):
     token = get_access_token()
+    log(json.dumps(payload))
     try:
         progressDialog.setLabelText("Fetching Data ...")
         progressBar.setValue(0)

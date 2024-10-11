@@ -1,4 +1,6 @@
 from .gui.DlgCoastalVulnerabilityIndex import Ui_DlgCoastalVulnerabilityIndex
+from .algorithms import dissolvePolygons
+from qgis.core import QgsVectorLayer
 from .downloads import *
 from .Styles import *
 from qgis.PyQt.QtCore import Qt
@@ -27,6 +29,16 @@ class DlgCoastalVulnerabilityIndex(QtWidgets.QDialog, Ui_DlgCoastalVulnerability
         self.RegionComboBox.currentTextChanged.connect(self.getSubRegions)
         self.OutputPushButton.clicked.connect(self.fillOutputDestination)
         self.SubmitPushButton.clicked.connect(self.compute)
+        
+        #Custom Shapefile
+        self.CustomComboBox.addItems(getLayers() if getLayers() is not None else [])
+        self.CustomPushButton.clicked.connect(self.fetchShapefile)
+    
+    def fetchShapefile(self):
+        path = getShapefile(self, self.CustomGroupBox.isChecked())
+        if path is not None:
+            self.CustomComboBox.setCurrentText(path)
+        
     def evaluateComputation(self):
         if self.IndexComboBox.currentText() == "Sea-Level Rise":
             return "Sea Level Change"
@@ -88,6 +100,40 @@ class DlgCoastalVulnerabilityIndex(QtWidgets.QDialog, Ui_DlgCoastalVulnerability
             "cached":self.CacheCheckBox.isChecked(),
             "start_year":int(self.YearComboBox.currentText()),
         }
+        
+        if self.CustomGroupBox.isChecked():
+            file = self.CustomComboBox.currentText()
+            if not file:
+                show_error_message("Custom Area not provided")
+                return
+            if os.path.isfile(file):
+                # Load the vector layer using QGIS's QgsVectorLayer class
+                layer = QgsVectorLayer(file, "layer_name", "ogr")
+                
+                if not layer.isValid():
+                    show_error_message(f"Failed to load the file: {file}")
+                    return None
+
+                # Use the updated QGIS dissolvePolygons function for QGIS layers
+                customCoords = dissolvePolygons(layer,filePath) # Using the new QGIS-based dissolvePolygons function
+                if customCoords is None:
+                    return None
+                
+                payload["custom_coords"] = customCoords
+            else:
+                # Handle QGIS layer input
+                layer = QgsProject.instance().mapLayersByName(file)[0]
+                if layer:
+                    # Use the updated QGIS dissolvePolygons function for QGIS layers
+                    customCoords = dissolvePolygons(layer,filePath)  # Using the new QGIS-based dissolvePolygons function
+                    if customCoords is None:
+                        return None
+                    
+                    payload["custom_coords"] = customCoords
+                else:
+                    show_error_message(f"Layer '{file}' not found in QGIS.")
+                    return None
+        
         country = self.CountryComboBox.currentText()
         region = self.RegionComboBox.currentText()
         subregion = self.SubRegionComboBox.currentText()

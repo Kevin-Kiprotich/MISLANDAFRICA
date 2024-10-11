@@ -43,6 +43,15 @@ class DlgSDGIndicator(QtWidgets.QDialog, Ui_DlgSDGIndicator):
         self.SubmitPushButton.clicked.connect(self.compute)
         self.OutputLineEdit.setReadOnly(True)
         
+        #Custom Shapefile
+        self.CustomComboBox.addItems(getLayers() if getLayers() is not None else [])
+        self.CustomPushButton.clicked.connect(self.fetchShapefile)
+    
+    def fetchShapefile(self):
+        path = getShapefile(self, self.CustomGroupBox.isChecked())
+        if path is not None:
+            self.CustomComboBox.setCurrentText(path)
+        
     def evaluateIndex(self):
         if self.SourceComboBox.currentText() == "Modis":
             self.IndexComboBox.setCurrentIndex(0)
@@ -108,6 +117,39 @@ class DlgSDGIndicator(QtWidgets.QDialog, Ui_DlgSDGIndicator):
             "veg_index":self.IndexComboBox.currentText(),
             "transform":"area",
         }
+        if self.CustomGroupBox.isChecked():
+            file = self.CustomComboBox.currentText()
+            if not file:
+                show_error_message("Custom Area not provided")
+                return
+            if os.path.isfile(file):
+                # Load the vector layer using QGIS's QgsVectorLayer class
+                layer = QgsVectorLayer(file, "layer_name", "ogr")
+                
+                if not layer.isValid():
+                    show_error_message(f"Failed to load the file: {file}")
+                    return None
+
+                # Use the updated QGIS dissolvePolygons function for QGIS layers
+                customCoords = dissolvePolygons(layer,filePath) # Using the new QGIS-based dissolvePolygons function
+                if customCoords is None:
+                    return None
+                
+                payload["custom_coords"] = customCoords
+            else:
+                # Handle QGIS layer input
+                layer = QgsProject.instance().mapLayersByName(file)[0]
+                if layer:
+                    # Use the updated QGIS dissolvePolygons function for QGIS layers
+                    customCoords = dissolvePolygons(layer,filePath)  # Using the new QGIS-based dissolvePolygons function
+                    if customCoords is None:
+                        return None
+                    
+                    payload["custom_coords"] = customCoords
+                else:
+                    show_error_message(f"Layer '{file}' not found in QGIS.")
+                    return None
+        
         country = self.CountryComboBox.currentText()
         region = self.RegionComboBox.currentText()
         subregion = self.SubRegionComboBox.currentText()
@@ -174,6 +216,15 @@ class DlgCarbonStock(QtWidgets.QDialog, Ui_DlgCarbonStock):
         self.OutputPushButton.clicked.connect(self.fillOutputDestination)
         self.SubmitPushButton.clicked.connect(self.compute)
         self.OutputLineEdit.setReadOnly(True)
+        
+        #Custom Shapefile
+        self.CustomComboBox.addItems(getLayers() if getLayers() is not None else [])
+        self.CustomPushButton.clicked.connect(self.fetchShapefile)
+    
+    def fetchShapefile(self):
+        path = getShapefile(self, self.CustomGroupBox.isChecked())
+        if path is not None:
+            self.CustomComboBox.setCurrentText(path)
     
     def fillOutputDestination(self):
         resetLineEditHighlight(self.OutputLineEdit)
@@ -227,7 +278,40 @@ class DlgCarbonStock(QtWidgets.QDialog, Ui_DlgCarbonStock):
             "start_year":2000,
             "end_year":int(self.YearComboBox.currentText())
         }
-            
+        
+        if self.CustomGroupBox.isChecked():
+            file = self.CustomComboBox.currentText()
+            if not file:
+                show_error_message("Custom Area not provided")
+                return
+            if os.path.isfile(file):
+                # Load the vector layer using QGIS's QgsVectorLayer class
+                layer = QgsVectorLayer(file, "layer_name", "ogr")
+                
+                if not layer.isValid():
+                    show_error_message(f"Failed to load the file: {file}")
+                    return None
+
+                # Use the updated QGIS dissolvePolygons function for QGIS layers
+                customCoords = dissolvePolygons(layer,filePath) # Using the new QGIS-based dissolvePolygons function
+                if customCoords is None:
+                    return None
+                
+                payload["custom_coords"] = customCoords
+            else:
+                # Handle QGIS layer input
+                layer = QgsProject.instance().mapLayersByName(file)[0]
+                if layer:
+                    # Use the updated QGIS dissolvePolygons function for QGIS layers
+                    customCoords = dissolvePolygons(layer,filePath)  # Using the new QGIS-based dissolvePolygons function
+                    if customCoords is None:
+                        return None
+                    
+                    payload["custom_coords"] = customCoords
+                else:
+                    show_error_message(f"Layer '{file}' not found in QGIS.")
+                    return None
+                
         country = self.CountryComboBox.currentText()
         region = self.RegionComboBox.currentText()
         subregion = self.SubRegionComboBox.currentText()
@@ -279,6 +363,7 @@ class DlgLandCover(QtWidgets.QDialog, Ui_DlgLandCover):
         self.YearComboBox.addItems(self.computationYears if self.computationYears is not None else [])
         self.StartYearComboBox.addItems(self.computationYears if self.computationYears is not None else [])
         self.EndYearComboBox.addItems(self.computationYears if self.computationYears is not None else [])
+        self.CustomComboBox.addItems(getLayers() if getLayers() is not None else [])
         self.OptionComboBox.addItems(self.analysisOptions)
         self.SourceComboBox.addItems(self.dataSources)
         self.YearsWidget.setVisible(False)
@@ -294,8 +379,16 @@ class DlgLandCover(QtWidgets.QDialog, Ui_DlgLandCover):
         self.OptionComboBox.currentTextChanged.connect(self.resetComputationYears)
         self.SubmitPushButton.clicked.connect(self.compute)
         self.OutputLineEdit.setReadOnly(True)
+        
+        #Custom Shapefile
+        self.CustomComboBox.addItems(getLayers() if getLayers() is not None else [])
+        self.CustomPushButton.clicked.connect(self.fetchShapefile)
     
-    
+    def fetchShapefile(self):
+        path = getShapefile(self, self.CustomGroupBox.isChecked())
+        if path is not None:
+            self.CustomComboBox.setCurrentText(path)
+            
     def fillOutputDestination(self):
         resetLineEditHighlight(self.OutputLineEdit)
         filepath = getOutputDestination(self)
@@ -368,6 +461,39 @@ class DlgLandCover(QtWidgets.QDialog, Ui_DlgLandCover):
             payload["show_change"] = 1
             payload["start_year"] = self.StartYearComboBox.currentText()
             
+            
+        if self.CustomGroupBox.isChecked():
+            file = self.CustomComboBox.currentText()
+            if not file:
+                show_error_message("Custom Area not provided")
+                return
+            if os.path.isfile(file):
+                # Load the vector layer using QGIS's QgsVectorLayer class
+                layer = QgsVectorLayer(file, "layer_name", "ogr")
+                
+                if not layer.isValid():
+                    show_error_message(f"Failed to load the file: {file}")
+                    return None
+
+                # Use the updated QGIS dissolvePolygons function for QGIS layers
+                customCoords = dissolvePolygons(layer,filePath) # Using the new QGIS-based dissolvePolygons function
+                if customCoords is None:
+                    return None
+                
+                payload["custom_coords"] = customCoords
+            else:
+                # Handle QGIS layer input
+                layer = QgsProject.instance().mapLayersByName(file)[0]
+                if layer:
+                    # Use the updated QGIS dissolvePolygons function for QGIS layers
+                    customCoords = dissolvePolygons(layer,filePath)  # Using the new QGIS-based dissolvePolygons function
+                    if customCoords is None:
+                        return None
+                    
+                    payload["custom_coords"] = customCoords
+                else:
+                    show_error_message(f"Layer '{file}' not found in QGIS.")
+                    return None 
         country = self.CountryComboBox.currentText()
         region = self.RegionComboBox.currentText()
         subregion = self.SubRegionComboBox.currentText()
@@ -522,6 +648,9 @@ class DlgLandProductivity(QtWidgets.QDialog, Ui_DlgLandProductivity):
         
         if self.CustomGroupBox.isChecked():
             file = self.CustomComboBox.currentText()
+            if not file:
+                show_error_message("Custom Area not provided")
+                return
             if os.path.isfile(file):
                 # Load the vector layer using QGIS's QgsVectorLayer class
                 layer = QgsVectorLayer(file, "layer_name", "ogr")
