@@ -32,7 +32,10 @@ from builtins import object
 from .resources import *
 # Import the code for the dialog
 import os
+import sys
 
+# Ensure that the ext-libs for the plugin are near the front of the path
+# (important on Linux)
 
 class MISLANDAFRICA(object):
     """QGIS Plugin Implementation."""

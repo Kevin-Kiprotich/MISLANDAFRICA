@@ -1,8 +1,9 @@
 from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QFileDialog
-from qgis.core import QgsRasterLayer, QgsProject
+from qgis.core import QgsRasterLayer, QgsProject, QgsMapLayerType
 from qgis.utils import iface
 from .data.admin_bounds import countries, regions, subregions
 from .data.computation_years import computationYears
+import json
 from . import log
 from .api import get_access_token
 import requests
@@ -239,3 +240,21 @@ def fetchRaster(path, payload, filePath, progressDialog, progressBar, computatio
     # except Exception as e:
     #     show_error_message(str(e))
     #     return None
+    
+
+
+def getLayers():
+    layers = QgsProject.instance().mapLayers().values()
+    vector_layers=[layer for layer in layers if layer.type() == QgsMapLayerType.VectorLayer and layer.dataProvider().name()=='ogr']
+    vector_names = [layer.name() for layer in vector_layers]
+    print(vector_layers)
+    return vector_names
+
+def getShapefile(parent=None,isActive=False):
+    if isActive:
+        # Open a file dialog to select a shapefile or GeoJSON
+        file_path, _ = QFileDialog.getOpenFileName(
+            parent, 'Open Layer File', '', 'Shapefiles (*.shp);;GeoJSON (*.geojson *.json)'
+        )
+        if file_path:
+            return file_path

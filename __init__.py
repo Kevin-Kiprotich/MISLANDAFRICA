@@ -22,7 +22,9 @@
  ***************************************************************************/
  This script initializes the plugin, making it known to QGIS.
 """
-
+import os
+import sys
+import site
 from qgis.PyQt import QtCore
 
 from qgis.core import QgsMessageLog

@@ -3,12 +3,14 @@ from .gui.DlgCarbonStock import Ui_DlgCarbonStock
 from .gui.DlgLandCover import Ui_DlgLandCover
 from .gui.DlgLandProductivity import Ui_DlgLandProductivity
 from concurrent.futures import ThreadPoolExecutor
+from .algorithms import dissolvePolygons
+import geopandas as gpd
 from .downloads import *
 from .Styles import *
-import threading
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt import QtWidgets
 from qgis.utils import iface
+from qgis.core import QgsVectorLayer
 mb = iface.messageBar()
 
 
@@ -419,6 +421,7 @@ class DlgLandProductivity(QtWidgets.QDialog, Ui_DlgLandProductivity):
             self.close()
         self.CountryComboBox.addItems(self.countries if self.countries is not None else [])
         self.YearComboBox.addItems(self.computationYears if self.computationYears is not None else [])
+        self.CustomComboBox.addItems(getLayers() if getLayers() is not None else [])
         self.IndicatorComboBox.addItems(self.productivityIndicators)
         self.IndexComboBox.addItems(self.indices)
         self.SourceComboBox.addItems(self.dataSources)
@@ -431,9 +434,15 @@ class DlgLandProductivity(QtWidgets.QDialog, Ui_DlgLandProductivity):
         self.IndicatorComboBox.currentTextChanged.connect(self.resetComputationYears)
         self.SourceComboBox.currentTextChanged.connect(self.evaluateIndex)
         self.SubmitPushButton.clicked.connect(self.compute)
+        self.CustomPushButton.clicked.connect(self.fetchShapefile)
         self.OutputPushButton.clicked.connect(self.fillOutputDestination)
         self.OutputLineEdit.setReadOnly(True)
-        
+    
+    def fetchShapefile(self):
+        path = getShapefile(self, self.CustomGroupBox.isChecked())
+        if path is not None:
+            self.CustomComboBox.setCurrentText(path)
+              
     def evaluateIndex(self):
         if self.SourceComboBox.currentText() == "Modis":
             self.IndexComboBox.setCurrentIndex(0)
@@ -510,6 +519,37 @@ class DlgLandProductivity(QtWidgets.QDialog, Ui_DlgLandProductivity):
             "veg_index":self.IndexComboBox.currentText(),
             "transform":"area",
         }
+        
+        if self.CustomGroupBox.isChecked():
+            file = self.CustomComboBox.currentText()
+            if os.path.isfile(file):
+                # Load the vector layer using QGIS's QgsVectorLayer class
+                layer = QgsVectorLayer(file, "layer_name", "ogr")
+                
+                if not layer.isValid():
+                    show_error_message(f"Failed to load the file: {file}")
+                    return None
+
+                # Use the updated QGIS dissolvePolygons function for QGIS layers
+                customCoords = dissolvePolygons(layer,filePath) # Using the new QGIS-based dissolvePolygons function
+                if customCoords is None:
+                    return None
+                
+                payload["custom_coords"] = customCoords
+            else:
+                # Handle QGIS layer input
+                layer = QgsProject.instance().mapLayersByName(file)[0]
+                if layer:
+                    # Use the updated QGIS dissolvePolygons function for QGIS layers
+                    customCoords = dissolvePolygons(layer,filePath)  # Using the new QGIS-based dissolvePolygons function
+                    if customCoords is None:
+                        return None
+                    
+                    payload["custom_coords"] = customCoords
+                else:
+                    show_error_message(f"Layer '{file}' not found in QGIS.")
+                    return None
+                
         country = self.CountryComboBox.currentText()
         region = self.RegionComboBox.currentText()
         subregion = self.SubRegionComboBox.currentText()
@@ -548,6 +588,7 @@ class DlgLandProductivity(QtWidgets.QDialog, Ui_DlgLandProductivity):
         #     print(result)
         #     if result is not None:
         #         self.close()
+        log(json.dumps(payload)) 
         result = fetchRaster(path, payload, filePath, progress_dialog, progress_bar,self.computation)
         if result is not None:
             self.close()    
