@@ -44,8 +44,22 @@ def dissolvePolygons(layer,path):
         if not features:
             show_error_message("Error dissolving features: Could not read features from dissolve geojson")
             return
+        
+        # Extract the geometry type (ensure it's a polygon and not multipolygon)
+        geometry = features[0]['geometry']
+
+        # If the geometry is a MultiPolygon, convert it to Polygon
+        if geometry['type'] == 'MultiPolygon':
+            log("Converting MultiPolygon to Polygon.")
+            # You can choose to return the first polygon in the MultiPolygon
+            # or merge polygons into a single Polygon based on your needs.
+            first_polygon = geometry['coordinates'][0]  # Get the first polygon
+            geometry = {
+                'type': 'Polygon',
+                'coordinates': first_polygon
+            }
         # Convert the dictionary to a JSON string
-        geometry_str = json.dumps(features[0])
+        geometry_str = json.dumps(geometry)
         log(geometry_str)
     
     except Exception as e:

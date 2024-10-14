@@ -1,5 +1,5 @@
 from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QFileDialog
-from qgis.core import QgsRasterLayer, QgsProject, QgsMapLayerType
+from qgis.core import QgsRasterLayer, QgsProject, QgsMapLayerType, QgsRasterBandStats
 from qgis.utils import iface
 from .data.admin_bounds import countries, regions, subregions
 from .data.computation_years import computationYears
@@ -205,6 +205,20 @@ def fetchRaster(path, payload, filePath, progressDialog, progressBar, computatio
                         log(f"Current style: {raster_layer.styleManager().currentStyle()}")
                         
                         iface.mapCanvas().refresh()
+                        if computation == "Forest Fire":
+                            # Set min/max values for the raster renderer if the default range does not match
+                            provider = raster_layer.dataProvider()
+                            stats = provider.bandStatistics(1, QgsRasterBandStats.All)
+                            log(str(stats.minimumValue))
+                            log(str(stats.maximumValue))
+                            renderer = raster_layer.renderer()
+                            renderer.setClassificationMin(stats.minimumValue)
+                            renderer.setClassificationMax(stats.maximumValue)
+
+                            # Refresh the layer again to apply the new min/max
+                            raster_layer.triggerRepaint()
+                            iface.layerTreeView().refreshLayerSymbology(raster_layer.id())
+                            iface.mapCanvas().refresh()
                         progressDialog.setLabelText("Done...")
                         progressBar.setValue(100)
                         progressDialog.close()

@@ -542,8 +542,8 @@ class DlgForestFireAssessment(QtWidgets.QDialog, Ui_DlgForestFireAssessment):
             self.CustomComboBox.setCurrentText(path)
 
     def updatePreEndDates(self):
-        self.PreEndDateEdit.setDate(self.StartDateEdit.date())
-        self.PreEndDateEdit.setMinimumDate(self.StartDateEdit.date())
+        self.PreEndDateEdit.setDate(self.PreStartDateEdit.date())
+        self.PreEndDateEdit.setMinimumDate(self.PreStartDateEdit.date())
     
     def updatePostStartDates(self):
         self.PostStartDateEdit.setDate(self.PreEndDateEdit.date())
