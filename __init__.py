@@ -26,7 +26,7 @@ import os
 import sys
 import site
 from qgis.PyQt import QtCore
-
+from tempfile import NamedTemporaryFile
 from qgis.core import QgsMessageLog
 from qgis.utils import iface
 
@@ -44,5 +44,10 @@ def classFactory(iface):  # pylint: disable=invalid-name
     :type iface: QgsInterface
     """
     #
-    from MISLANDAFRICA.plugin import MISLANDAFRICA
+    from .plugin import MISLANDAFRICA
     return MISLANDAFRICA(iface)
+
+def GetTempFilename(suffix):
+    f = NamedTemporaryFile(suffix=suffix, delete=False)
+    f.close()
+    return f.name

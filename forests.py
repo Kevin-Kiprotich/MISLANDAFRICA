@@ -255,8 +255,8 @@ class DlgForestCarbonEmission(QtWidgets.QDialog, Ui_DlgForestCarbonEmission):
         filePath = self.OutputLineEdit.text()
         payload = {
             "admin_0": self.country_id,
-            "raster_source":self.SourceComboBox.currentText(),
-            "raster_type":6,
+            # "raster_source":self.SourceComboBox.currentText(),
+            # "raster_type":6,
             "end_year":int(self.YearComboBox.currentText()),
             "cached":self.CacheCheckBox.isChecked(),
             "start_year":int(self.YearComboBox.currentText()),

@@ -24,6 +24,8 @@
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMenu, QMessageBox
+from qgis.core import QgsApplication
+from .processing_provider.provider import Provider
 from .settings import DlgSettings
 from .calculate import DlgCalculate
 
@@ -92,7 +94,10 @@ class MISLANDAFRICA(object):
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('MISLANDAFRICA', message)
 
-
+    def initProcessing(self):
+        self.provider = Provider()
+        QgsApplication.processingRegistry().addProvider(self.provider)
+        
     def add_action(
         self,
         icon_path,
@@ -165,6 +170,7 @@ class MISLANDAFRICA(object):
         return action
 
     def initGui(self):
+        self.initProcessing()
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
@@ -186,6 +192,7 @@ class MISLANDAFRICA(object):
 
 
     def unload(self):
+        self.provider = Provider()
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
             self.iface.removePluginMenu(
@@ -196,6 +203,7 @@ class MISLANDAFRICA(object):
         self.raster_menu.removeAction(self.menu.menuAction())
         # remove the toolbar
         del self.toolbar
+        QgsApplication.processingRegistry().removeProvider(self.provider)
 
 
     def run_settings(self):
