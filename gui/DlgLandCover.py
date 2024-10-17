@@ -358,7 +358,7 @@ class Ui_DlgLandCover(object):
 
     def retranslateUi(self, DlgLandCover):
         _translate = QtCore.QCoreApplication.translate
-        DlgLandCover.setWindowTitle(_translate("DlgLandCover", "Dialog"))
+        DlgLandCover.setWindowTitle(_translate("DlgLandCover", "Land Cover"))
         self.groupBox.setTitle(_translate("DlgLandCover", "Land Cover"))
         self.label_6.setText(_translate("DlgLandCover", "Country"))
         self.label_7.setText(_translate("DlgLandCover", "Region"))

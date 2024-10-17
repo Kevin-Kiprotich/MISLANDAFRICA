@@ -12,12 +12,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_DlgSDG(object):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(282, 270)
-        self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
+    def setupUi(self, DlgSDG):
+        DlgSDG.setObjectName("DlgSDG")
+        DlgSDG.resize(282, 270)
+        self.verticalLayout = QtWidgets.QVBoxLayout(DlgSDG)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.groupBox = QtWidgets.QGroupBox(Dialog)
+        self.groupBox = QtWidgets.QGroupBox(DlgSDG)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -84,24 +84,24 @@ class Ui_DlgSDG(object):
         self.verticalLayout_2.addWidget(self.pushButton_sdg)
         self.verticalLayout.addWidget(self.groupBox)
 
-        self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        self.retranslateUi(DlgSDG)
+        QtCore.QMetaObject.connectSlotsByName(DlgSDG)
 
-    def retranslateUi(self, Dialog):
+    def retranslateUi(self, DlgSDG):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.groupBox.setTitle(_translate("Dialog", "Land Degradation Indicator"))
-        self.pushButton_lp.setText(_translate("Dialog", "Land Productivity"))
-        self.pushButton_lc.setText(_translate("Dialog", "Land Cover"))
-        self.pushButton_cs.setText(_translate("Dialog", "Carbon Stock"))
-        self.pushButton_sdg.setText(_translate("Dialog", "SDG Indicator"))
+        DlgSDG.setWindowTitle(_translate("DlgSDG", "SDG Indicators"))
+        self.groupBox.setTitle(_translate("DlgSDG", "Land Degradation Indicator"))
+        self.pushButton_lp.setText(_translate("DlgSDG", "Land Productivity"))
+        self.pushButton_lc.setText(_translate("DlgSDG", "Land Cover"))
+        self.pushButton_cs.setText(_translate("DlgSDG", "Carbon Stock"))
+        self.pushButton_sdg.setText(_translate("DlgSDG", "SDG Indicator"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    Dialog = QtWidgets.QDialog()
+    DlgSDG = QtWidgets.QDialog()
     ui = Ui_DlgSDG()
-    ui.setupUi(Dialog)
-    Dialog.show()
+    ui.setupUi(DlgSDG)
+    DlgSDG.show()
     sys.exit(app.exec_())

@@ -11,7 +11,7 @@ from qgis.PyQt import QtCore
 from qgis.PyQt.QtCore import QThread, Qt, QEventLoop
 from qgis.PyQt.QtWidgets import QProgressBar, QPushButton, QApplication
 
-from MISLANDAFRICA import log
+from . import log
 
 
 class AbstractWorker(QtCore.QObject):

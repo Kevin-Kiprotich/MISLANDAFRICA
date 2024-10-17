@@ -22,7 +22,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Carbon Stock</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_10">
    <item>

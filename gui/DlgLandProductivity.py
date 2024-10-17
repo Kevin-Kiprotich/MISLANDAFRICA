@@ -314,7 +314,7 @@ class Ui_DlgLandProductivity(object):
 
     def retranslateUi(self, DlgLandProductivity):
         _translate = QtCore.QCoreApplication.translate
-        DlgLandProductivity.setWindowTitle(_translate("DlgLandProductivity", "Dialog"))
+        DlgLandProductivity.setWindowTitle(_translate("DlgLandProductivity", "Land Productivity"))
         self.groupBox.setTitle(_translate("DlgLandProductivity", "Land Productivity"))
         self.label_6.setText(_translate("DlgLandProductivity", "Country"))
         self.label_7.setText(_translate("DlgLandProductivity", "Region"))

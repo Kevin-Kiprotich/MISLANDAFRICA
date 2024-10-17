@@ -303,7 +303,7 @@ class Ui_DlgCarbonStock(object):
 
     def retranslateUi(self, DlgCarbonStock):
         _translate = QtCore.QCoreApplication.translate
-        DlgCarbonStock.setWindowTitle(_translate("DlgCarbonStock", "Dialog"))
+        DlgCarbonStock.setWindowTitle(_translate("DlgCarbonStock", "Carbon Stock"))
         self.groupBox.setTitle(_translate("DlgCarbonStock", "Carbon Stock"))
         self.label_6.setText(_translate("DlgCarbonStock", "Country"))
         self.label_7.setText(_translate("DlgCarbonStock", "Region"))

@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_DlgSDGIndicator(object):
     def setupUi(self, DlgSDGIndicator):
         DlgSDGIndicator.setObjectName("DlgSDGIndicator")
-        DlgSDGIndicator.resize(431, 466)
+        DlgSDGIndicator.resize(431, 543)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -365,7 +365,7 @@ class Ui_DlgSDGIndicator(object):
 
     def retranslateUi(self, DlgSDGIndicator):
         _translate = QtCore.QCoreApplication.translate
-        DlgSDGIndicator.setWindowTitle(_translate("DlgSDGIndicator", "Dialog"))
+        DlgSDGIndicator.setWindowTitle(_translate("DlgSDGIndicator", "SDG Indicator"))
         self.groupBox.setTitle(_translate("DlgSDGIndicator", "SDG Indicator"))
         self.label_6.setText(_translate("DlgSDGIndicator", "Country"))
         self.label_9.setText(_translate("DlgSDGIndicator", "Region"))
