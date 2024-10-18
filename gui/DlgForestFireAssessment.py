@@ -340,7 +340,7 @@ class Ui_DlgForestFireAssessment(object):
 
     def retranslateUi(self, DlgForestFireAssessment):
         _translate = QtCore.QCoreApplication.translate
-        DlgForestFireAssessment.setWindowTitle(_translate("DlgForestFireAssessment", "Dialog"))
+        DlgForestFireAssessment.setWindowTitle(_translate("DlgForestFireAssessment", "Forest Fire Assessment Dialog"))
         self.groupBox.setTitle(_translate("DlgForestFireAssessment", "Forest Fire Assessment"))
         self.label_6.setText(_translate("DlgForestFireAssessment", "Country"))
         self.label_7.setText(_translate("DlgForestFireAssessment", "Region"))

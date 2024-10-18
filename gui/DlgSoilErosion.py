@@ -63,7 +63,17 @@ class Ui_DlgSoilErosion(object):
 
     def retranslateUi(self, DlgSoilErosion):
         _translate = QtCore.QCoreApplication.translate
-        DlgSoilErosion.setWindowTitle(_translate("DlgSoilErosion", "Dialog"))
+        DlgSoilErosion.setWindowTitle(_translate("DlgSoilErosion", "Soil Erosion Dialog"))
         self.groupBox.setTitle(_translate("DlgSoilErosion", "Soil Erosion"))
         self.WaterPushButton.setText(_translate("DlgSoilErosion", "Water Erosion"))
         self.WindPushButton.setText(_translate("DlgSoilErosion", "Wind Erosion"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    DlgSoilErosion = QtWidgets.QDialog()
+    ui = Ui_DlgSoilErosion()
+    ui.setupUi(DlgSoilErosion)
+    DlgSoilErosion.show()
+    sys.exit(app.exec_())

@@ -253,7 +253,7 @@ class Ui_DlgWaterErosion(object):
 
     def retranslateUi(self, DlgWaterErosion):
         _translate = QtCore.QCoreApplication.translate
-        DlgWaterErosion.setWindowTitle(_translate("DlgWaterErosion", "Dialog"))
+        DlgWaterErosion.setWindowTitle(_translate("DlgWaterErosion", "Water Erosion Dialog"))
         self.groupBox.setTitle(_translate("DlgWaterErosion", "Water Erosion"))
         self.label_6.setText(_translate("DlgWaterErosion", "Country"))
         self.label_7.setText(_translate("DlgWaterErosion", "Region"))

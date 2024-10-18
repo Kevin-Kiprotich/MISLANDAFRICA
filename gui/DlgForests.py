@@ -12,12 +12,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class Ui_DlgForests(object):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(283, 271)
-        self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
+    def setupUi(self, DlgForests):
+        DlgForests.setObjectName("DlgForests")
+        DlgForests.resize(283, 271)
+        self.verticalLayout = QtWidgets.QVBoxLayout(DlgForests)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.groupBox = QtWidgets.QGroupBox(Dialog)
+        self.groupBox = QtWidgets.QGroupBox(DlgForests)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -84,24 +84,24 @@ class Ui_DlgForests(object):
         self.verticalLayout_2.addWidget(self.pushButton_ffa)
         self.verticalLayout.addWidget(self.groupBox)
 
-        self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        self.retranslateUi(DlgForests)
+        QtCore.QMetaObject.connectSlotsByName(DlgForests)
 
-    def retranslateUi(self, Dialog):
+    def retranslateUi(self, DlgForests):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.groupBox.setTitle(_translate("Dialog", "Forest Degradation Hotspots"))
-        self.pushButton_fl.setText(_translate("Dialog", "Forest Loss"))
-        self.pushButton_fc.setText(_translate("Dialog", "Forest Carbon"))
-        self.pushButton_ffr.setText(_translate("Dialog", "Forest Fire Risk"))
-        self.pushButton_ffa.setText(_translate("Dialog", "Forest Fire Assessment"))
+        DlgForests.setWindowTitle(_translate("DlgForests", "Forest Degradation Dialog"))
+        self.groupBox.setTitle(_translate("DlgForests", "Forest Degradation Hotspots"))
+        self.pushButton_fl.setText(_translate("DlgForests", "Forest Loss"))
+        self.pushButton_fc.setText(_translate("DlgForests", "Forest Carbon"))
+        self.pushButton_ffr.setText(_translate("DlgForests", "Forest Fire Risk"))
+        self.pushButton_ffa.setText(_translate("DlgForests", "Forest Fire Assessment"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    Dialog = QtWidgets.QDialog()
+    DlgForests = QtWidgets.QDialog()
     ui = Ui_DlgForests()
-    ui.setupUi(Dialog)
-    Dialog.show()
+    ui.setupUi(DlgForests)
+    DlgForests.show()
     sys.exit(app.exec_())

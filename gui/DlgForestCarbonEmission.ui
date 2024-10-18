@@ -22,7 +22,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Forest Carbon Emission Dialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_14">
    <item>

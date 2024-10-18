@@ -256,7 +256,7 @@ class Ui_DlgForestFireRisk(object):
 
     def retranslateUi(self, DlgForestFireRisk):
         _translate = QtCore.QCoreApplication.translate
-        DlgForestFireRisk.setWindowTitle(_translate("DlgForestFireRisk", "Dialog"))
+        DlgForestFireRisk.setWindowTitle(_translate("DlgForestFireRisk", "Forest Fire Dialog"))
         self.groupBox.setTitle(_translate("DlgForestFireRisk", "Forest Fire Risk"))
         self.label_6.setText(_translate("DlgForestFireRisk", "Country"))
         self.label_7.setText(_translate("DlgForestFireRisk", "Region"))

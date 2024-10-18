@@ -334,7 +334,7 @@ class Ui_DlgForestCarbonEmission(object):
 
     def retranslateUi(self, DlgForestCarbonEmission):
         _translate = QtCore.QCoreApplication.translate
-        DlgForestCarbonEmission.setWindowTitle(_translate("DlgForestCarbonEmission", "Dialog"))
+        DlgForestCarbonEmission.setWindowTitle(_translate("DlgForestCarbonEmission", "Forest Carbon Emission Dialog"))
         self.groupBox.setTitle(_translate("DlgForestCarbonEmission", "Forest Carbon Emission"))
         self.label_6.setText(_translate("DlgForestCarbonEmission", "Country"))
         self.label_7.setText(_translate("DlgForestCarbonEmission", "Region"))

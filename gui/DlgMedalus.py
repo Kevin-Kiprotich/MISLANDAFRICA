@@ -254,7 +254,7 @@ class Ui_DlgMedalus(object):
 
     def retranslateUi(self, DlgMedalus):
         _translate = QtCore.QCoreApplication.translate
-        DlgMedalus.setWindowTitle(_translate("DlgMedalus", "Dialog"))
+        DlgMedalus.setWindowTitle(_translate("DlgMedalus", "MEDALUS Desertification Dialog"))
         self.groupBox.setTitle(_translate("DlgMedalus", "MEDALUS"))
         self.label_6.setText(_translate("DlgMedalus", "Country"))
         self.label_7.setText(_translate("DlgMedalus", "Region"))

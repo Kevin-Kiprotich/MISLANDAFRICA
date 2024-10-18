@@ -290,7 +290,7 @@ class Ui_DlgVegetation(object):
 
     def retranslateUi(self, DlgVegetation):
         _translate = QtCore.QCoreApplication.translate
-        DlgVegetation.setWindowTitle(_translate("DlgVegetation", "Dialog"))
+        DlgVegetation.setWindowTitle(_translate("DlgVegetation", "Vegetation Loss/Gain"))
         self.groupBox.setTitle(_translate("DlgVegetation", "Vegetation Loss/Gain"))
         self.label_6.setText(_translate("DlgVegetation", "Country"))
         self.label_7.setText(_translate("DlgVegetation", "Region"))

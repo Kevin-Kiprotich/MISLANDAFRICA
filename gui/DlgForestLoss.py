@@ -258,7 +258,7 @@ class Ui_DlgForestLoss(object):
 
     def retranslateUi(self, DlgForestLoss):
         _translate = QtCore.QCoreApplication.translate
-        DlgForestLoss.setWindowTitle(_translate("DlgForestLoss", "Dialog"))
+        DlgForestLoss.setWindowTitle(_translate("DlgForestLoss", "Forest Loss dialog"))
         self.groupBox.setTitle(_translate("DlgForestLoss", "Forest Loss"))
         self.label_6.setText(_translate("DlgForestLoss", "Country"))
         self.label_7.setText(_translate("DlgForestLoss", "Region"))

@@ -21,7 +21,7 @@ class DlgSDGIndicator(QtWidgets.QDialog, Ui_DlgSDGIndicator):
         self.setupUi(self)
         
         self.dataSources = ['Modis', 'Landsat']
-        self.vegetationIndex = ['NDVI']
+        self.vegetationIndex = ['NDVI','MSAVI', 'SAVI']
         self.EcoDataSources = ['2000','2001','2002']
         self.SOCReferences = ['2000','2001','2002']
         self.computation = "Land Degradation"

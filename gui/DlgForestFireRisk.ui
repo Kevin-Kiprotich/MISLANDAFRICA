@@ -22,7 +22,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Forest Fire Dialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
