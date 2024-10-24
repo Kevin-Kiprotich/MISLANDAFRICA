@@ -16,7 +16,7 @@ from qgis.utils import iface
 
 from .worker import AbstractWorker, start_worker
 
-from MISLANDAFRICA import log
+from . import log
 
 API_URL = 'http://misland-africa.oss-online.org:1337/api'
 TIMEOUT = 20
