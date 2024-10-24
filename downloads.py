@@ -153,7 +153,6 @@ def fetchRaster(path, payload, filePath, progressDialog, progressBar, computatio
         if resp.status_code == 200:
             progressBar.setValue(30)
             raster_data = resp.json()
-            print(raster_data)
             progressDialog.setLabelText("Fetching Raster File ...")
             if "error" in raster_data.keys():
                 show_error_message(raster_data['error'])
@@ -177,7 +176,6 @@ def fetchRaster(path, payload, filePath, progressDialog, progressBar, computatio
                     file.write(raster_response.content)
                 
                 qml_path = os.path.join(pluginDir, "data/sld/{}.qml".format(computation))
-                print(qml_path)
                 # Step 1: Load the GeoTIFF into QGIS
                 progressDialog.setLabelText("Loading raster to QGIS...")
                 progressBar.setValue(70)
@@ -196,9 +194,7 @@ def fetchRaster(path, payload, filePath, progressDialog, progressBar, computatio
                     progressDialog.setLabelText("Loading Style Layer...")
                     progressBar.setValue(90)
                     log(computation)
-                    print(computation)
                     result = raster_layer.loadNamedStyle(qml_path)
-                    print(result)
                     if result[1]:
                         raster_layer.triggerRepaint()
                         project.instance().addMapLayer(raster_layer)
@@ -262,7 +258,6 @@ def getLayers():
     layers = QgsProject.instance().mapLayers().values()
     vector_layers=[layer for layer in layers if layer.type() == QgsMapLayerType.VectorLayer and layer.dataProvider().name()=='ogr']
     vector_names = [layer.name() for layer in vector_layers]
-    print(vector_layers)
     return vector_names
 
 def getShapefile(parent=None,isActive=False):

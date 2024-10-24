@@ -39,7 +39,6 @@ def dissolvePolygons(layer,path):
             
         # Extract the features list
         features = geojson_dict.get('features', [])
-        print(features)
         
         if not features:
             show_error_message("Error dissolving features: Could not read features from dissolve geojson")

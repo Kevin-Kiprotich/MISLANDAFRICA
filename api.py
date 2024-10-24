@@ -50,14 +50,11 @@ def login(email=None, password=None):
                                    QtWidgets.QApplication.translate("MISLANDAFRICA", "Error"),
                                    QtWidgets.QApplication.translate("MISLANDAFRICA", "Unable to login to MISLAND-AFRICA. Check your username and password."))
         return None
-    print(password)
-    print(email)
     try:
         # resp = call_api('/auth', method='post', payload={"email": email, "password": password})
         resp = requests.post(API_URL+ "/login/", json={"email": email, "password": password})
         
         if resp.status_code == 200:
-            print("Access Token:\t{}".format(resp.json().get("token")))
             QtCore.QSettings().setValue("MISLANDAFRICA/email", email)
             QtCore.QSettings().setValue("MISLANDAFRICA/password", password)
             QtCore.QSettings().setValue("MISLANDAFRICA/token", resp.json().get("token"))
